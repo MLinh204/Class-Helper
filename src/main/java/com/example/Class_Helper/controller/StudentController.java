@@ -18,7 +18,7 @@ public class StudentController {
         model.addAttribute("students", studentService.getALlStudent());
         return "studentList";
     }
-    @GetMapping
+    @GetMapping("/{id}")
     public String studentDetail(@PathVariable Long id, Model model){
         model.addAttribute("student", studentService.getStudentById(id));
         return "studentDetail";
@@ -56,6 +56,20 @@ public class StudentController {
     @PostMapping("/addPoints/{id}")
     public String addPoint(@PathVariable Long id, @RequestParam double pointToAdd, @RequestParam String description){
         studentService.addPoint(id, pointToAdd, description);
+        return "redirect:/students";
+    }
+
+    @PostMapping("/update/{id}")
+    public String updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent){
+        Student existingStudent = studentService.getStudentById(id);
+        existingStudent.setName(updatedStudent.getName());
+        existingStudent.setHeart(updatedStudent.getHeart());
+        existingStudent.setPowerType(updatedStudent.getPowerType());
+        existingStudent.setPoint(updatedStudent.getPoint());
+        existingStudent.setLevel(updatedStudent.getLevel());
+        existingStudent.setProfilePicture(updatedStudent.getProfilePicture());
+
+        studentService.updateStudent(updatedStudent);
         return "redirect:/students";
     }
 }

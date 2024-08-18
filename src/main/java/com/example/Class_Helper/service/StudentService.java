@@ -3,9 +3,10 @@ package com.example.Class_Helper.service;
 import com.example.Class_Helper.model.Student;
 import com.example.Class_Helper.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
