@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" th:href="@{/images/favicon.png}" type="image/x-icon">
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:300,300i,400,500,600,700,800,900,900i%7CRoboto:400%7CRubik:100,400,700">
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
     <link rel="stylesheet" th:href="@{/css/fonts.css}">
@@ -37,21 +37,21 @@
                             <!-- RD Navbar Toggle-->
                             <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
                             <!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a th:href="@{index.html}"><img class="brand-logo-light" th:src="@{/images/logo.png}" alt="" width="207" height="51"/></a></div>
+                            <div class="rd-navbar-brand"><a th:href="@{/home}"><img class="brand-logo-light" th:src="@{/images/logo.png}" alt="" width="207" height="51"/></a></div>
                         </div>
                         <div class="rd-navbar-main-element">
                             <div class="rd-navbar-nav-wrap">
                                 <!-- RD Navbar Nav-->
                                 <ul class="rd-navbar-nav">
-                                    <li class="rd-nav-item active"><a class="rd-nav-link" th:href="@{/home}">Home</a>
+                                    <li class="rd-nav-item active"><a class="rd-nav-link" style="color: white;" th:href="@{/home}">Home</a>
                                     </li>
                                     <li class="rd-nav-item"><a class="rd-nav-link" th:href="@{/students}">Student List</a>
                                     </li>
                                     <li class="rd-nav-item"><a class="rd-nav-link" th:href="@{contacts.html}">Tests</a>
                                     </li>
-                                </ul><a class="button button-primary button-sm" href="#">Donate</a>
+                                </ul><a class="button button-primary button-sm" th:href="@{/students}">Return to student list</a>
                             </div>
-                        </div><a class="button button-primary button-sm" href="#">Donate</a>
+                        </div><a class="button button-primary button-sm" th:href="@{/students}">Return to student list</a>
                     </div>
                 </div>
             </nav>
