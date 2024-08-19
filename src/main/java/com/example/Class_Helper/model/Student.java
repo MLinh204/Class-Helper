@@ -15,7 +15,7 @@ public class Student {
     private String profilePicture;
     private double heart;
     private int level;
-    private double point;
+    private int point;
 
     public Long getId() {
         return id;
@@ -65,11 +65,11 @@ public class Student {
         this.level = level;
     }
 
-    public double getPoint() {
+    public int getPoint() {
         return point;
     }
 
-    public void setPoint(double point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 }

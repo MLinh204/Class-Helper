@@ -28,17 +28,19 @@ public class StudentService {
     public Student modifyHeart(Long id, double heartChange, String description){
         Student student = getStudentById(id);
         if(student!=null){
-            student.setHeart(student.getHeart() + heartChange);
+            double newHeartValue = student.getHeart() + heartChange;
+            newHeartValue = Math.min(10, Math.max(0, newHeartValue));
+            student.setHeart(newHeartValue);
             return updateStudent(student);
         }
         return null;
     }
-    public Student addPoint(Long id, double pointToAdd, String description){
+    public Student addPoint(Long id, int pointToAdd, String description){
         Student student = getStudentById(id);
         if (student!=null){
-            double totalPoint = student.getPoint()+pointToAdd;
-            int newLevel = student.getLevel() + (int)(totalPoint/2000);
-            double remainingPoint = totalPoint %2000;
+            int totalPoint = student.getPoint()+pointToAdd;
+            int newLevel = student.getLevel() + (totalPoint/2000);
+            int remainingPoint = totalPoint %2000;
             student.setLevel(newLevel);
             student.setPoint(remainingPoint);
             return updateStudent(student);

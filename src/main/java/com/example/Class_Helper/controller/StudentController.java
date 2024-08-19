@@ -38,23 +38,14 @@ public class StudentController {
         studentService.deleteStudent(id);
         return "redirect:/students";
     }
-    @GetMapping("/modifyHeart/{id}")
-    public String modifyHeartForm(@PathVariable Long id, Model model){
-        model.addAttribute("studentId", id);
-        return "modifyHeartForm";
-    }
+
     @PostMapping("/modifyHeart/{id}")
     public String modifyHeart(@PathVariable Long id, @RequestParam double heartChange, @RequestParam String description){
         studentService.modifyHeart(id, heartChange, description);
         return "redirect:/students";
     }
-    @GetMapping("/addPoints/{id}")
-    public String addPointForm(@PathVariable Long id, Model model){
-        model.addAttribute("studentId", id);
-        return "addPointForm";
-    }
     @PostMapping("/addPoints/{id}")
-    public String addPoint(@PathVariable Long id, @RequestParam double pointToAdd, @RequestParam String description){
+    public String addPoint(@PathVariable Long id, @RequestParam int pointToAdd, @RequestParam String description){
         studentService.addPoint(id, pointToAdd, description);
         return "redirect:/students";
     }
@@ -65,7 +56,7 @@ public class StudentController {
         existingStudent.setName(updatedStudent.getName());
         existingStudent.setHeart(updatedStudent.getHeart());
         existingStudent.setPowerType(updatedStudent.getPowerType());
-        existingStudent.setPoint(updatedStudent.getPoint());
+        existingStudent.setPoint    (updatedStudent.getPoint());
         existingStudent.setLevel(updatedStudent.getLevel());
         existingStudent.setProfilePicture(updatedStudent.getProfilePicture());
 
