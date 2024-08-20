@@ -1,9 +1,6 @@
 package com.example.Class_Helper.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Student {
@@ -13,9 +10,16 @@ public class Student {
     private String name;
     private String powerType;
     private String profilePicture;
-    private double heart;
-    private int level;
-    private int point;
+    @Column(nullable = false)
+    private int level = 1;
+
+    @Column(nullable = false)
+    private double heart = 10.0;
+
+    @Column(nullable = false)
+    private int point = 0;
+    @Column(nullable = false)
+    private int crystal = 10;
 
     public Long getId() {
         return id;
@@ -71,5 +75,13 @@ public class Student {
 
     public void setPoint(int point) {
         this.point = point;
+    }
+
+    public int getCrystal() {
+        return crystal;
+    }
+
+    public void setCrystal(int crystal) {
+        this.crystal = crystal;
     }
 }

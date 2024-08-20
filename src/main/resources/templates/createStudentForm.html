@@ -67,22 +67,15 @@
                     <input type="text" th:field="*{name}" placeholder="Name*" required>
                 </div>
                 <div class="input">
-                    <input type="text" th:field="*{powerType}" placeholder="Power Type*" required>
-                </div>
-                <div class="input">
                     <input type="text" th:field="*{profilePicture}" placeholder="URL to your profile picture*" required>
                 </div>
-                <div class="input" style="display: flex; gap: 4px;">
-                    <label>Heart: </label><br>
-                    <input type="number" value="" th:field="*{heart}" required>
-                </div>
-                <div class="input" style="display: flex; gap: 4px;">
-                    <label>Point: </label><br>
-                    <input type="number" value="" th:field="*{point}" required>
-                </div>
-                <div class="input" style="display: flex; gap: 4px;">
-                    <label>Level: </label><br>
-                    <input type="number" value="" th:field="*{level}" required>
+                <div class="input">
+                    <select th:field="*{powerType}" class="form-select" required>
+                        <option value="">Power Type*</option>
+                        <option value="mage">Mage</option>
+                        <option value="guard">Guard</option>
+                        <option value="healer">Healer</option>
+                    </select>
                 </div>
                 <button type="submit">Save</button>
             </form>

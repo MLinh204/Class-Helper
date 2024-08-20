@@ -5,7 +5,10 @@ import com.example.Class_Helper.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 @Service
 public class StudentService {
     @Autowired
@@ -43,6 +46,26 @@ public class StudentService {
             int remainingPoint = totalPoint %2000;
             student.setLevel(newLevel);
             student.setPoint(remainingPoint);
+            return updateStudent(student);
+        }
+        return null;
+    }
+
+    public Student getRandomStudent() {
+        List<Student> students = studentRepository.findAll();
+        if (students.isEmpty()) {
+            return null;
+        }
+        int randomIndex = new Random().nextInt(students.size());
+        return students.get(randomIndex);
+    }
+
+    public Student modifyCrystal(Long id, int crystalChange, String description){
+        Student student = getStudentById(id);
+        if (student!=null){
+            int newCrystal = student.getCrystal() + crystalChange;
+            newCrystal = Math.min(10, Math.max(0, newCrystal));
+            student.setCrystal(newCrystal);
             return updateStudent(student);
         }
         return null;

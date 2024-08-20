@@ -7,6 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/students")
 public class StudentController {
@@ -42,12 +45,12 @@ public class StudentController {
     @PostMapping("/modifyHeart/{id}")
     public String modifyHeart(@PathVariable Long id, @RequestParam double heartChange, @RequestParam String description){
         studentService.modifyHeart(id, heartChange, description);
-        return "redirect:/students";
+        return "redirect:/students" + id;
     }
     @PostMapping("/addPoints/{id}")
     public String addPoint(@PathVariable Long id, @RequestParam int pointToAdd, @RequestParam String description){
         studentService.addPoint(id, pointToAdd, description);
-        return "redirect:/students";
+        return "redirect:/students" + id;
     }
 
     @PostMapping("/update/{id}")
@@ -61,6 +64,22 @@ public class StudentController {
         existingStudent.setProfilePicture(updatedStudent.getProfilePicture());
 
         studentService.updateStudent(updatedStudent);
-        return "redirect:/students";
+        return "redirect:/students" + id;
+    }
+    @GetMapping("/random")
+    public String selectStudentForm(Model model){
+        List<Student> students = studentService.getALlStudent();
+        model.addAttribute("students", students);
+        return "selectRandomForm";
+    }
+    @PostMapping("/random")
+    @ResponseBody
+    public Student selectStudent() {
+        return studentService.getRandomStudent();
+    }
+    @PostMapping("/modifyCrystal/{id}")
+    public String modifyCrystal (@PathVariable Long id, @RequestParam int newCrystal, @RequestParam String description){
+        studentService.modifyCrystal(id, newCrystal, description);
+        return "redirect:/students/" + id;
     }
 }

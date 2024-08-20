@@ -115,6 +115,26 @@
               </div>
             </div>
 
+            <!--Modify Crystal Form-->
+            <div id="modifyCrystalModal" class="modal">
+              <div class="modal-content">
+                <h2>Modify Heart</h2>
+                <form th:action="@{/students/modifyCrystal/{id}(id=${student.id})}" method="post">
+                  <div class="input" style="display: flex; gap: 4px;">
+                    <label>Crystal to Modify: </label><br>
+                    <input type="number" value="" name="newCrystal" required>
+                  </div>
+                  <div class="input">
+                    <input type="text" style="color: black;" name="description" placeholder="Description*" required>
+                  </div>
+                  <div class="modal-buttons">
+                    <button type="submit" class="button button-primary">Save</button>
+                    <a href="#" class="button">Cancel</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+
             <!--Edit Form-->
             <div id="editStudentModal" class="modal">
               <div class="modal-content">
@@ -167,6 +187,11 @@
                   <h6 th:text="'Heart: ' + ${student.heart}"></h6>
                   <img style="max-width: 10%; height:20px; position: relative; bottom: 2px;" th:src="@{/images/heart.png}" alt="heart">
                     <a href="#addHeartModal"><img style="max-width: 100%; height:20px; position: relative; bottom: 8px;" th:src="@{/images/add_icon.png}" alt="add"></a>
+                  </div>
+                  <div class="heart-container" style="display: flex; gap: 10px; top: 1px; position: relative;">
+                    <h6 th:text="'Crystal: ' + ${student.crystal}"></h6>
+                    <img style="max-width: 10%; height:20px; position: relative; bottom: 2px;" th:src="@{/images/crystal.png}" alt="heart">
+                    <a href="#modifyCrystalModal"><img style="max-width: 100%; height:20px; position: relative; bottom: 8px;" th:src="@{/images/add_icon.png}" alt="add"></a>
                   </div>
                   <h6 th:text="'Level: ' + ${student.level}"></h6>
                   <div class="point-container" style="display: flex; gap: 10px; top: 1px; position: relative;">
