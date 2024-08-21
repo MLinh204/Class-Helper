@@ -45,12 +45,12 @@ public class StudentController {
     @PostMapping("/modifyHeart/{id}")
     public String modifyHeart(@PathVariable Long id, @RequestParam double heartChange, @RequestParam String description){
         studentService.modifyHeart(id, heartChange, description);
-        return "redirect:/students" + id;
+        return "redirect:/students/" + id;
     }
     @PostMapping("/addPoints/{id}")
     public String addPoint(@PathVariable Long id, @RequestParam int pointToAdd, @RequestParam String description){
         studentService.addPoint(id, pointToAdd, description);
-        return "redirect:/students" + id;
+        return "redirect:/students/" + id;
     }
 
     @PostMapping("/update/{id}")
@@ -64,7 +64,7 @@ public class StudentController {
         existingStudent.setProfilePicture(updatedStudent.getProfilePicture());
 
         studentService.updateStudent(updatedStudent);
-        return "redirect:/students" + id;
+        return "redirect:/students/" + id;
     }
     @GetMapping("/random")
     public String selectStudentForm(Model model){
