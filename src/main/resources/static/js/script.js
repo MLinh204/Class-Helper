@@ -1,5 +1,19 @@
 "use strict";
 (function () {
+    var cachedPageState = window.history.state;
+
+    window.addEventListener('popstate', function(event) {
+        if (cachedPageState !== event.state) {
+            window.location.reload();
+        }
+        cachedPageState = event.state;
+    });
+
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
 	// Global variables
 	var userAgent = navigator.userAgent.toLowerCase(),
 		initialDate = new Date(),
