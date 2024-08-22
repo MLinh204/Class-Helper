@@ -82,4 +82,9 @@ public class StudentController {
         studentService.modifyCrystal(id, newCrystal, description);
         return "redirect:/students/" + id;
     }
+
+    @GetMapping("/whiteBoard")
+    public String whiteBoard(){
+        return "whiteBoard";
+    }
 }
