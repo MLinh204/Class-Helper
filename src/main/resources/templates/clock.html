@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time</title>
+  <link rel="icon" th:href="@{/images/logo.png}" type="image/x-icon">
+  <link rel="stylesheet" th:href="@{/css/clock.css}">
+</head>
+<body>
+<div class="navigation">
+  <a class="navBtn" id="whiteBoard" th:href="@{/home}">Home</a>
+  <a class="navBtn" id="home" th:href="@{/whiteBoard}">White Board</a>
+  <a class="navBtn" id="studentList" th:href="@{/students}">Student List</a>
+  <a class="navBtn" id="random" th:href="@{/students/random}">Random Student</a>
+</div>
+<div class="button-mode">
+  <button id="countdownbtn">Count Down</button>
+  <button id="timerbtn">Timer</button>
+</div>
+<div class="timer-box">
+  <div class="controls">
+    <button id="resetBtn">Reset</button>
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+  </div>
+  <div class="display" id="display">00:00</div>
+</div>
+<input type="text" id="timeInput" placeholder="Enter time (mm:ss)">
+<script th:src="@{/js/clock.js}"></script>
+</body>
+</html>

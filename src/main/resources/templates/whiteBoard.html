@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
   <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/clock.css}">
   <style>
         #canvas {
             border: 1px solid #000;
@@ -18,6 +19,13 @@
     </style>
 </head>
 <body>
+<div class="navigation">
+  <a class="navBtn" id="whiteBoard" th:href="@{/home}">Home</a>
+  <a class="navBtn" id="home" th:href="@{/whiteBoard}">White Board</a>
+  <a class="navBtn" id="clock" th:href="@{/clock}">Clock</a>
+  <a class="navBtn" id="random" th:href="@{/students/random}">Random Student</a>
+  <a class="navBtn" id="studentList" th:href="@{/students}">Student List</a>
+</div>
 <div class="container">
   <h1>White Board</h1>
   <div class="tools">

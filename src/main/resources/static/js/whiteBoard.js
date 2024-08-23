@@ -4,30 +4,26 @@ document.addEventListener('DOMContentLoaded', function() {
     let mode = 'draw';
     let isDrawing = false;
     let startX, startY;
-    let textBoxes = [];
+    let text = '';
+    let textPosition = { x: 0, y: 0 };
 
     function startAction(e) {
         isDrawing = true;
-        [startX, startY] = [e.clientX, e.clientY];
+        [startX, startY] = [e.offsetX, e.offsetY];
 
         if (mode === 'draw') {
-            [startX, startY] = [e.offsetX, e.offsetY];
             ctx.beginPath();
-            ctx.stroke
             ctx.moveTo(startX, startY);
+        } else if (mode === 'type') {
+            textPosition = { x: startX, y: startY };
         }
     }
 
-    function endAction(e) {
+    function endAction() {
         isDrawing = false;
-
-        if (mode === 'type') {
-            createTextBox(e.clientX, e.clientY);
-        }
     }
 
     function draw(e) {
-        [startX, startY] = [e.offsetX, e.offsetY];
         if (!isDrawing || mode !== 'draw') return;
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
@@ -38,18 +34,12 @@ document.addEventListener('DOMContentLoaded', function() {
         ctx.clearRect(e.offsetX - 15, e.offsetY - 15, 30, 30);
     }
 
-    function createTextBox(endX, endY) {
-        const textBox = document.createElement('textarea');
-        textBox.style.position = 'absolute';
-        textBox.style.left = `${Math.min(startX, endX)}px`;
-        textBox.style.top = `${Math.min(startY, endY)}px`;
-        textBox.style.width = `${Math.abs(endX - startX)}px`;
-        textBox.style.height = `${Math.abs(endY - startY)}px`;
-        textBox.style.border = '1px solid #000';
-        textBox.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-        textBox.style.zIndex = '1000';
-        document.body.appendChild(textBox);
-        textBoxes.push(textBox);
+    function typeOnCanvas(e) {
+        if (mode !== 'type') return;
+        text += e.key;
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText(text, textPosition.x, textPosition.y);
     }
 
     canvas.addEventListener('mousedown', startAction);
@@ -62,6 +52,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    document.addEventListener('keydown', function(e) {
+        if (mode === 'type') {
+            if (e.key === 'Backspace') {
+                text = text.slice(0, -1);
+                // Clear the area and redraw the text
+                ctx.clearRect(textPosition.x, textPosition.y - 20, ctx.measureText(text + e.key).width, 25);
+                ctx.fillText(text, textPosition.x, textPosition.y);
+            } else if (e.key.length === 1) {
+                typeOnCanvas(e);
+            }
+        }
+    });
+
     document.getElementById('drawBtn').addEventListener('click', function() {
         mode = 'draw';
         ctx.strokeStyle = '#000';
@@ -70,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('typeBtn').addEventListener('click', function() {
         mode = 'type';
+        text = '';
     });
 
     document.getElementById('eraseBtn').addEventListener('click', function() {
@@ -78,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('clearBtn').addEventListener('click', function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        textBoxes.forEach(box => box.remove());
-        textBoxes = [];
+        text = '';
     });
 });
