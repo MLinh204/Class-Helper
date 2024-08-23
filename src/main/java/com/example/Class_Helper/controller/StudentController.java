@@ -26,6 +26,18 @@ public class StudentController {
         model.addAttribute("student", studentService.getStudentById(id));
         return "studentDetail";
     }
+    @GetMapping("/all")
+    @ResponseBody
+    public List<Student> getAllStudents() {
+        return studentService.getALlStudent();
+    }
+
+    @GetMapping("/{id}/details")
+    @ResponseBody
+    public Student getStudentDetails(@PathVariable Long id) {
+        return studentService.getStudentById(id);
+    }
+
     @GetMapping("/create")
     public String createStudentForm( Model model){
         model.addAttribute("student", new Student());
@@ -81,10 +93,5 @@ public class StudentController {
     public String modifyCrystal (@PathVariable Long id, @RequestParam int newCrystal, @RequestParam String description){
         studentService.modifyCrystal(id, newCrystal, description);
         return "redirect:/students/" + id;
-    }
-
-    @GetMapping("/whiteBoard")
-    public String whiteBoard(){
-        return "whiteBoard";
     }
 }

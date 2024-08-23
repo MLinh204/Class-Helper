@@ -12,4 +12,9 @@ public class HomeController {
     public String getHome(){
         return "home";
     }
+    @GetMapping("/whiteBoard")
+    public String whiteBoard(){
+        return "whiteBoard";
+    }
+
 }

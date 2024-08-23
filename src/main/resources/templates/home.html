@@ -49,7 +49,18 @@
                       </li>
                     </ul><a class="button button-primary button-sm" th:href="@{/students/create}">Add Student</a>
                   </div>
-                </div><a class="button button-primary button-sm" th:href="@{/students/create}">Add Student</a>
+                </div>
+                <div class="Dropdown">
+                  <button class="button button-primary button-sm" type="button" data-toggle="dropdown">Functions
+                    <span class="caret"></span></button>
+                  <ul class="dropdown-menu" style="padding: 10px;">
+                    <li>
+                      <a class="button button-primary button-sm" th:href="@{/students/create}">Add Student</a>
+                      <a class="button button-primary button-sm" th:href="@{/students/random}">Random Student</a>
+                      <a class="button button-primary button-sm" th:href="@{/home/whiteBoard}">White Board</a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </nav>
