@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     clearInterval(intervalId);
                     alert('Countdown finished!');
+                    isRunning=false;
                 }
             } else {
                 totalSeconds++;
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
         totalSeconds = 0;
         timeInput.value = ""
         updateDisplay(totalSeconds);
+        isRunning=false;
     }
     function highlightButton(){
         if(isCountdown === true){
