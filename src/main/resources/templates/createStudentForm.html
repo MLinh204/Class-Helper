@@ -64,8 +64,8 @@
         <div class="form-container">
             <form th:action="@{/students/create}" th:object="${student}" method="post">
                 <div class="input">
-                    <input type="text" th:field="*{name}" placeholder="Name*" required>
                 </div>
+                    <input type="text" th:field="*{name}" placeholder="Name*" required>
                 <div class="input">
                     <input type="text" th:field="*{profilePicture}" placeholder="URL to your profile picture*" required>
                 </div>

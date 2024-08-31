@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Game</title>
+</head>
+<body>
+<h1>Start a New Game</h1>
+<form th:action="@{/game/create}" method="post">
+    <div>
+        <label for="player1Name">Player 1 Name:</label>
+        <input type="text" id="player1Name" name="player1.name" required>
+    </div>
+    <div>
+        <label for="player2Name">Player 2 Name:</label>
+        <input type="text" id="player2Name" name="player2.name" required>
+    </div>
+    <div>
+        <label for="quizId">Select Quiz:</label>
+        <select id="quizId" name="id" required>
+            <option th:each="quiz : ${quizzes}" th:value="${quiz.id}" th:text="${quiz.name}"></option>
+        </select>
+    </div>
+    <button type="submit">Start Game</button>
+</form>
+</body>
+</html>

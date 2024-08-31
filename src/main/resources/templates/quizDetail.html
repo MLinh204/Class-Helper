@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${quiz.name}">Quiz Detail</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/fonts.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment.css}">
+</head>
+<body>
+<h1 th:text="${quiz.name}">Quiz Name</h1>
+<div class="custom-btn">
+    <a class="button button-primary button-sm" style="background: #bd3232;" href="#addQuestionModal">Create Quiz</a>
+</div>
+<form th:action="@{/quiz/update/{id}(id=${quiz.id})}" method="post">
+    <label for="quizName">Quiz Name:</label>
+    <input type="text" id="quizName" name="name" th:value="${quiz.name}" required>
+    <button type="submit">Update Quiz</button>
+</form>
+<h2>Questions</h2>
+<table>
+    <tbody>
+    <tr th:each="question : ${quiz.questions}">
+        <td th:text="${question.questionText}"></td>
+        <td>
+            <ul>
+                <li th:each="option : ${question.options}" th:text="${option}"></li>
+            </ul>
+        </td>
+        <td th:text="${question.options[question.correctOptionIndex]}"></td>
+        <td>
+            <a th:href="@{/quiz/{quizId}/update-question/{questionId}(quizId=${quiz.id},questionId=${question.id})}">Edit</a>
+            <a th:href="@{/quiz/{quizId}/delete-question/{questionId}(quizId=${quiz.id},questionId=${question.id})}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!--Add Question Form-->
+<div id="addQuestionModal" class="modal">
+    <div class="modal-content">
+        <h2>Add New Question</h2>
+        <form th:action="@{/quiz/{id}/create-question(id=${quiz.id})}" th:object="${question}" method="post">
+            <div>
+                <label for="questionText">Question:</label>
+                <input type="text" id="questionText" th:field="*{questionText}" placeholder="Name*" required>
+            </div>
+            <div>
+                <label for="option0">Option 1:</label>
+                <input type="text" id="option0" name="options[0]" required>
+            </div>
+            <div>
+                <label for="option1">Option 2:</label>
+                <input type="text" id="option1" name="options[1]" required>
+            </div>
+            <div>
+                <label for="option2">Option 3:</label>
+                <input type="text" id="option2" name="options[2]" required>
+            </div>
+            <div>
+                <label for="option3">Option 4:</label>
+                <input type="text" id="option3" name="options[3]" required>
+            </div>
+            <div>
+                <label for="correctOptionIndex">Correct Answer:</label>
+                <select id="correctOptionIndex" name="correctOptionIndex" required>
+                    <option value="0">Option 1</option>
+                    <option value="1">Option 2</option>
+                    <option value="2">Option 3</option>
+                    <option value="3">Option 4</option>
+                </select>
+            </div>
+            <button type="submit">Add Question</button>
+        </form>
+    </div>
+</div>
+<a th:href="@{/quiz}">Back to Quizzes</a>
+<script th:src="@{/js/core.min.js}"></script>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

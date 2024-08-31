@@ -10,6 +10,7 @@ public class Student {
     private String name;
     private String powerType;
     private String profilePicture;
+    private String symbol;
     @Column(nullable = false)
     private int level = 1;
 
@@ -83,5 +84,13 @@ public class Student {
 
     public void setCrystal(int crystal) {
         this.crystal = crystal;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quizzes</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{/css/fonts.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/fragment.css}">
+</head>
+<body>
+<h1>Quizzes</h1>
+<!--Create Quiz Form-->
+<div id="createQuizModal" class="modal">
+    <div class="modal-content">
+        <h2>Create Quiz</h2>
+        <form th:action="@{/quiz/create}" th:object="${quiz}" method="post">
+            <div class="input" style="display: flex; gap: 4px;">
+                <label for="name">Quiz Name: </label><br>
+                <input type="text" id="name" th:field="*{name}" placeholder="Name*" required>
+            </div>
+            <div class="modal-buttons">
+                <button type="submit" class="button button-primary">Save</button>
+                <a href="#" class="button">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="custom-btn">
+    <a class="button button-primary button-sm" style="background: #bd3232;" href="#createQuizModal">Create Quiz</a>
+</div>
+<div class="quiz-container">
+        <div class="quiz" th:each="quiz : ${quizzes}">
+            <h3>
+                <a th:href="@{/quiz/{id}(id=${quiz.id})}" th:text="${quiz.name}"></a>
+            </h3>
+        </div>
+</div>
+<script th:src="@{/js/core.min.js}"></script>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

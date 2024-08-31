@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateDisplay(totalSeconds);
                 } else {
                     clearInterval(intervalId);
+                    isRunning = false;
                     alert('Countdown finished!');
                 }
             } else {
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         clearInterval(intervalId);
         totalSeconds = 0;
         timeInput.value = ""
+        isRunning = false;
         updateDisplay(totalSeconds);
     }
     function highlightButton(){
