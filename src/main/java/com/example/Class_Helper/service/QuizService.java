@@ -25,8 +25,8 @@ public class QuizService {
         return quizRepository.findAll();
     }
 
-    public Optional<Quiz> findQuizById(Long id) {
-        return quizRepository.findById(id);
+    public Quiz findQuizById(Long id) {
+        return quizRepository.findById(id).orElse(null);
     }
 
     public void deleteQuiz(Long id) {
@@ -37,13 +37,8 @@ public class QuizService {
         return quizRepository.save(quiz);
     }
 
-    public Optional<Quiz> updateQuiz(Long id, Quiz updatedQuiz) {
-        return quizRepository.findById(id)
-                .map(quiz -> {
-                    quiz.setName(updatedQuiz.getName());
-                    // Update other fields as necessary
-                    return quizRepository.save(quiz);
-                });
+    public Quiz updateQuiz(Quiz updatedQuiz) {
+        return quizRepository.save(updatedQuiz);
     }
 
     // Question related methods

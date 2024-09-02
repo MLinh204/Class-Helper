@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/quiz")
 public class QuizController {
@@ -24,8 +27,10 @@ public class QuizController {
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
-        quizService.findQuizById(id).ifPresent(quiz -> model.addAttribute("quiz", quiz));
-        model.addAttribute("question", new Question());
+        Quiz quiz = quizService.findQuizById(id);
+        List<Question> questions = quizService.getAllQuestionsByQuizId(id).orElse(new ArrayList<>());
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("questions", questions);
         return "quizDetail";
     }
 
@@ -37,7 +42,11 @@ public class QuizController {
 
     @PostMapping("/update/{id}")
     public String updateQuiz(@PathVariable Long id, @ModelAttribute Quiz updatedQuiz) {
-        quizService.updateQuiz(id, updatedQuiz);
+        Quiz existingQuiz = quizService.findQuizById(id);
+        if (existingQuiz != null) {
+            existingQuiz.setName(updatedQuiz.getName());
+            quizService.updateQuiz(existingQuiz);
+        }
         return "redirect:/quiz/" + id;
     }
 

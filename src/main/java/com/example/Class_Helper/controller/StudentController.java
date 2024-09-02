@@ -71,7 +71,7 @@ public class StudentController {
         existingStudent.setName(updatedStudent.getName());
         existingStudent.setHeart(updatedStudent.getHeart());
         existingStudent.setPowerType(updatedStudent.getPowerType());
-        existingStudent.setPoint    (updatedStudent.getPoint());
+        existingStudent.setPoint(updatedStudent.getPoint());
         existingStudent.setLevel(updatedStudent.getLevel());
         existingStudent.setProfilePicture(updatedStudent.getProfilePicture());
 

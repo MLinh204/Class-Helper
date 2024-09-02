@@ -6,63 +6,96 @@
     <link rel="stylesheet" th:href="@{/css/fonts.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/fragment.css}">
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: #343a40;
+            color: #fff;
+        }
+        .header h3 {
+            margin: 0;
+        }
+        .body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .question-holder {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .edit-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #9c27b0;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .question-text {
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .option {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .radio-button {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #888;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .option-text {
+        margin: 0;
+    }
+    .correct-answer {
+        margin-top: 15px;
+        font-style: italic;
+        color: #4caf50;
+    }
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #2196f3;
+        text-decoration: none;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    </style>
 </head>
 <body>
-<h1 th:text="${quiz.name}">Quiz Name</h1>
-<div class="custom-btn">
-    <a class="button button-primary button-sm" style="background: #bd3232;" href="#addQuestionModal">Create Quiz</a>
-</div>
-<form th:action="@{/quiz/update/{id}(id=${quiz.id})}" method="post">
-    <label for="quizName">Quiz Name:</label>
-    <input type="text" id="quizName" name="name" th:value="${quiz.name}" required>
-    <button type="submit">Update Quiz</button>
-</form>
-<h2>Questions</h2>
-<table>
-    <tbody>
-    <tr th:each="question : ${quiz.questions}">
-        <td th:text="${question.questionText}"></td>
-        <td>
-            <ul>
-                <li th:each="option : ${question.options}" th:text="${option}"></li>
-            </ul>
-        </td>
-        <td th:text="${question.options[question.correctOptionIndex]}"></td>
-        <td>
-            <a th:href="@{/quiz/{quizId}/update-question/{questionId}(quizId=${quiz.id},questionId=${question.id})}">Edit</a>
-            <a th:href="@{/quiz/{quizId}/delete-question/{questionId}(quizId=${quiz.id},questionId=${question.id})}">Delete</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<!--Add Question Form-->
-<div id="addQuestionModal" class="modal">
-    <div class="modal-content">
-        <h2>Add New Question</h2>
-        <form th:action="@{/quiz/{id}/create-question(id=${quiz.id})}" th:object="${question}" method="post">
-            <div>
+<!--Add Question-->
+<div id="addQuestion" class="modal">
+    <div class="modal-content" style="background: rgba(0, 0, 0, .8); color: white;">
+        <h2 style="color: antiquewhite;">Add Question</h2>
+        <form th:action="@{/quiz/{id}/create-question(id=${quiz.id})}" method="post">
+            <div class="input">
                 <label for="questionText">Question:</label>
-                <input type="text" id="questionText" th:field="*{questionText}" placeholder="Name*" required>
+                <input type="text" id="questionText" name="questionText" required>
             </div>
-            <div>
-                <label for="option0">Option 1:</label>
-                <input type="text" id="option0" name="options[0]" required>
+            <div class="input">
+                <label>Options:</label>
+                <div th:each="i : ${#numbers.sequence(0, 3)}">
+                    <input type="text" th:name="'options[' + ${i} + ']'" th:placeholder="'Option ' + (${i} + 1)" required>
+                </div>
             </div>
-            <div>
-                <label for="option1">Option 2:</label>
-                <input type="text" id="option1" name="options[1]" required>
-            </div>
-            <div>
-                <label for="option2">Option 3:</label>
-                <input type="text" id="option2" name="options[2]" required>
-            </div>
-            <div>
-                <label for="option3">Option 4:</label>
-                <input type="text" id="option3" name="options[3]" required>
-            </div>
-            <div>
-                <label for="correctOptionIndex">Correct Answer:</label>
+            <div class="correct-option">
+                <label for="correctOptionIndex">Correct Option:</label>
                 <select id="correctOptionIndex" name="correctOptionIndex" required>
                     <option value="0">Option 1</option>
                     <option value="1">Option 2</option>
@@ -70,11 +103,77 @@
                     <option value="3">Option 4</option>
                 </select>
             </div>
-            <button type="submit">Add Question</button>
+            <div class="modal-buttons">
+                <button type="submit" class="button button-primary">Save</button>
+                <a href="#" class="button" style="background-color: #6c757d;">Cancel</a>
+            </div>
         </form>
     </div>
 </div>
-<a th:href="@{/quiz}">Back to Quizzes</a>
+
+<!-- Edit Question Modal -->
+<div th:each="question : ${questions}">
+    <div th:id="'editQuestion-' + ${question.id}" class="modal">
+        <div class="modal-content" style="background: rgba(0, 0, 0, .8); color: white;">
+            <h2 style="color: antiquewhite;">Edit Question</h2>
+            <form th:action="@{/quiz/{quizId}/update-question/{questionId}(quizId=${quiz.id},questionId=${question.id})}" method="post">
+                <div class="input">
+                    <label for="editQuestionText">Question:</label>
+                    <input type="text" id="editQuestionText" name="questionText" th:value="${question.questionText}" required>
+                </div>
+                <div class="input">
+                    <label>Options:</label>
+                    <div th:each="option, optionStat : ${question.options}">
+                        <input type="text" th:name="'options[' + ${optionStat.index} + ']'" th:value="${option}" th:placeholder="'Option ' + (${optionStat.index} + 1)" required>
+                    </div>
+                </div>
+                <div class="correct-option">
+                    <label for="editCorrectOptionIndex">Correct Option:</label>
+                    <select id="editCorrectOptionIndex" name="correctOptionIndex" required>
+                        <option th:each="option, optionStat : ${question.options}" th:value="${optionStat.index}" th:text="'Option ' + (${optionStat.index} + 1)"></option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="button button-primary">Save</button>
+                    <a href="#" class="button" style="background-color: #6c757d;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<section class="header">
+    <h3 th:text="${quiz.name}"></h3>
+    <div class="custom-btn">
+        <a class="button button-primary button-sm" href="#">Start Game</a>
+        <a class="button button-primary button-sm" href="#addQuestion">Add Question</a>
+    </div>
+</section>
+
+<section class="body">
+    <h4 th:text="${'Quiz Name: ' + quiz.name}"></h4>
+    <p th:text="${'Number of Questions: ' + #lists.size(questions)}"></p>
+
+    <div th:if="${#lists.isEmpty(questions)}">
+        <p>No questions available for this quiz.</p>
+    </div>
+
+    <div th:unless="${#lists.isEmpty(questions)}">
+        <div class="question-holder" th:each="question, questionStat : ${questions}" th:object="${question}">
+            <a th:href="'#editQuestion-' + ${question.id}" class="edit-btn">Edit</a>
+            <div class="question-text" th:text="${questionStat.count + '. ' + question.questionText}"></div>
+            <div class="option" th:each="option, optionStat : ${question.options}">
+                <span class="radio-button"></span>
+                <p class="option-text" th:text="${'ABCD'[optionStat.index] + '. ' + option}"></p>
+            </div>
+            <div class="correct-answer">
+                <p class="correctOption-text" th:text="'Correct Answer: ' + ${'ABCD'[question.correctOptionIndex]}"></p>
+            </div>
+        </div>
+    </div>
+
+    <a class="back-link" th:href="@{/quiz}">Back to Quizzes</a>
+</section>
 <script th:src="@{/js/core.min.js}"></script>
 <script th:src="@{/js/script.js}"></script>
 </body>
