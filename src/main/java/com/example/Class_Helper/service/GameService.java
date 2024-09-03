@@ -7,6 +7,7 @@ import com.example.Class_Helper.model.Student;
 import com.example.Class_Helper.repository.GameRepository;
 import com.example.Class_Helper.repository.QuestionRepository;
 import com.example.Class_Helper.repository.QuizRepository;
+import com.example.Class_Helper.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,9 @@ public class GameService {
     private GameRepository gameRepository;
     @Autowired
     private QuizRepository quizRepository;
-    public Game createGame(Student player1, Student player2, Long quizId){
+    @Autowired
+    private StudentRepository studentRepository;
+    public Game createGame(Student player1, Student player2, Long quizId) {
         Game game = new Game();
         game.setCurrentPlayer(player1);
         game.setPlayer1(player1);
@@ -32,15 +35,16 @@ public class GameService {
         game.setBoard(new ArrayList<>(List.of("", "", "", "", "", "", "", "", "")));
         return gameRepository.save(game);
     }
-    public Optional<Question> randomQuestion(Long quizId) {
-        Optional<Quiz> quizOptional = quizRepository.findById(quizId);
-        if (quizOptional.isPresent()) {
-            List<Question> questions = quizOptional.get().getQuestions();
-            if (!questions.isEmpty()) {
-                return Optional.of(questions.get(new Random().nextInt(questions.size())));
-            }
+    public Question getRandomQuestion(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new IllegalArgumentException("Quiz not found"));
+
+        List<Question> questions = quiz.getQuestions();
+        if (questions.isEmpty()) {
+            throw new RuntimeException("No questions available for this quiz");
         }
-        return Optional.empty();
+
+        return questions.get(new Random().nextInt(questions.size()));
     }
     public boolean isCorrectAnswer(Question question, int answer){
         return question.getCorrectOptionIndex() == answer;
@@ -70,8 +74,8 @@ public class GameService {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
 
-        Optional<Question> questionOptional = randomQuestion(quizId);
-        if (questionOptional.isPresent() && isCorrectAnswer(questionOptional.get(), answer) && game.getBoard().get(position).isEmpty()) {
+        Question question = getRandomQuestion(quizId);
+        if (isCorrectAnswer(question, answer) && game.getBoard().get(position).isEmpty()) {
             List<String> updatedBoard = new ArrayList<>(game.getBoard());
             updatedBoard.set(position, game.getCurrentPlayer().getSymbol());
             game.setBoard(updatedBoard);

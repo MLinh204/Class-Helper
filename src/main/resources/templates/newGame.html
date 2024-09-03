@@ -1,26 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>New Game</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tic-Tac-Toe Quiz Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h1>Start a New Game</h1>
-<form th:action="@{/game/create}" method="post">
-    <div>
-        <label for="player1Name">Player 1 Name:</label>
-        <input type="text" id="player1Name" name="player1.name" required>
-    </div>
-    <div>
-        <label for="player2Name">Player 2 Name:</label>
-        <input type="text" id="player2Name" name="player2.name" required>
-    </div>
-    <div>
-        <label for="quizId">Select Quiz:</label>
-        <select id="quizId" name="id" required>
-            <option th:each="quiz : ${quizzes}" th:value="${quiz.id}" th:text="${quiz.name}"></option>
-        </select>
-    </div>
-    <button type="submit">Start Game</button>
-</form>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">New Tic-Tac-Toe Quiz Game</h1>
+    <form th:action="@{/game/create}" method="post">
+        <div class="mb-3">
+            <label for="player1Id" class="form-label">Player 1:</label>
+            <select class="form-select" id="player1Id" name="player1Id" required>
+                <option value="">Choose a player</option>
+                <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="player2Id" class="form-label">Player 2:</label>
+            <select class="form-select" id="player2Id" name="player2Id" required>
+                <option value="">Choose a player</option>
+                <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.name}"></option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="quizSelect" class="form-label">Select Quiz:</label>
+            <select class="form-select" id="quizSelect" name="quizId" required>
+                <option value="">Choose a quiz</option>
+                <option th:each="quiz : ${quizzes}" th:value="${quiz.id}" th:text="${quiz.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Start Game</button>
+    </form>
+</div>
 </body>
 </html>

@@ -1,9 +1,11 @@
 package com.example.Class_Helper.controller;
 
 import com.example.Class_Helper.model.Game;
+import com.example.Class_Helper.model.Question;
 import com.example.Class_Helper.model.Quiz;
 import com.example.Class_Helper.model.Student;
 import com.example.Class_Helper.repository.QuizRepository;
+import com.example.Class_Helper.repository.StudentRepository;
 import com.example.Class_Helper.service.GameService;
 import com.example.Class_Helper.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +20,32 @@ public class GameController {
     private GameService gameService;
     @Autowired
     private QuizRepository quizRepository;
-
+    @Autowired
+    private StudentRepository studentRepository;
     @GetMapping("/new")
     public String newGame(Model model){
-        model.addAttribute("player1", new Student());
-        model.addAttribute("player2", new Student());
+        model.addAttribute("quizzes", quizRepository.findAll());
+        model.addAttribute("students", studentRepository.findAll());
         return "newGame";
     }
-    @PostMapping("/create/{id}")
-    public String createGame(@PathVariable Long id,@ModelAttribute Student player1, @ModelAttribute Student player2, Model model){
+    @PostMapping("/create")
+    public String createGame(@RequestParam Long player1Id,
+                             @RequestParam Long player2Id,
+                             @RequestParam Long quizId,
+                             Model model) {
+        Student player1 = studentRepository.findById(player1Id)
+                .orElseThrow(() -> new IllegalArgumentException("Player 1 not found"));
+        Student player2 = studentRepository.findById(player2Id)
+                .orElseThrow(() -> new IllegalArgumentException("Player 2 not found"));
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new IllegalArgumentException("Quiz not found"));
+
         player1.setSymbol("X");
         player2.setSymbol("O");
-        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Quiz not found"));
+
         Game game = gameService.createGame(player1, player2, quiz.getId());
-        model.addAttribute("game",game);
-        model.addAttribute("quiz", gameService.randomQuestion(quiz.getId()));
+        model.addAttribute("game", game);
+        model.addAttribute("questions", quiz.getQuestions());
         return "game";
     }
     @PostMapping("/{gameId}/play")
@@ -40,8 +53,13 @@ public class GameController {
         Game game = gameService.playGame(gameId, position, answer, quizId);
         model.addAttribute("game", game);
         if (game.getWinner() == null) {
-            gameService.randomQuestion(quizId).ifPresent(question -> model.addAttribute("quiz", question));
+            gameService.getRandomQuestion(quizId);
         }
         return "game";
+    }
+    @GetMapping("/{gameId}/question")
+    @ResponseBody
+    public Question getQuestion(@PathVariable Long gameId, @RequestParam Long quizId, @RequestParam int position) {
+        return gameService.getRandomQuestion(quizId);
     }
 }
