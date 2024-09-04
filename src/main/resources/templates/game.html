@@ -106,6 +106,16 @@
                 });
                 quizSection.style.display = 'block';
                 submitButton.disabled = false;
+                document.getElementById('gameForm').addEventListener('submit', function(event) {
+                 const selectedAnswer = document.querySelector('input[name="answer"]:checked').value;
+                    if (selectedAnswer != question.correctOptionIndex) {
+                    event.preventDefault();
+                    alert('Incorrect answer!');
+        } else{
+            event.preventDefault();
+            alert('Correct answer!');
+        }
+    });
             }
 
             cells.forEach(cell => {

@@ -74,7 +74,6 @@ public class QuizService {
                     question.setQuestionText(updatedQuestion.getQuestionText());
                     question.setOptions(updatedQuestion.getOptions());
                     question.setCorrectOptionIndex(updatedQuestion.getCorrectOptionIndex());
-                    // Update other fields as necessary
                     return questionRepository.save(question);
                 });
     }

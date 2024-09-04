@@ -53,15 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay(totalSeconds);
         isRunning=false;
     }
-    function highlightButton(){
-        if(isCountdown === true){
-            countdownBtn.style.background = '#527bd5';
-            timerBtn.style.background = 'white'
-        } else{
-            timerBtn.style.background = '#527bd5'
-            countdownBtn.style.background = 'white';
-        }
-    }
 
     startBtn.addEventListener('click', () => {
         if (totalSeconds === 0 && timeInput.value) {
@@ -76,14 +67,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     countdownBtn.addEventListener('click', () => {
         isCountdown = true;
-        highlightButton()
+        countdownBtn.style.background = '#527bd5';
+        timerBtn.style.background = 'white'
         resetTimer();
         timeInput.value = "";
     });
 
     timerBtn.addEventListener('click', () => {
         isCountdown = false;
-        highlightButton()
+        timerBtn.style.background = '#527bd5'
+        countdownBtn.style.background = 'white';
         resetTimer();
         timeInput.value = "";
     });
