@@ -9,6 +9,7 @@ import com.example.Class_Helper.repository.StudentRepository;
 import com.example.Class_Helper.service.GameService;
 import com.example.Class_Helper.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,12 +50,18 @@ public class GameController {
         return "game";
     }
     @PostMapping("/{gameId}/play")
-    public String playGame(@PathVariable Long gameId, @RequestParam Long quizId, @RequestParam int answer, @RequestParam int position, Model model) {
-        Game game = gameService.playGame(gameId, position, answer, quizId);
+    @ResponseBody
+    public ResponseEntity<Game> playGame(@PathVariable Long gameId,
+                                         @RequestParam Long quizId,
+                                         @RequestParam int answer,
+                                         @RequestParam int position) {
+        Game updatedGame = gameService.playGame(gameId, position, answer, quizId);
+        return ResponseEntity.ok(updatedGame);
+    }
+    @GetMapping("/{gameId}")
+    public String getGame(@PathVariable Long gameId, Model model) {
+        Game game = gameService.getGame(gameId);
         model.addAttribute("game", game);
-        if (game.getWinner() == null) {
-            gameService.getRandomQuestion(quizId);
-        }
         return "game";
     }
     @GetMapping("/{gameId}/question")

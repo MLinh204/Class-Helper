@@ -15,7 +15,7 @@ public class Question {
     @ElementCollection
     private List<String> options;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer correctOptionIndex;
 
     @ManyToOne

@@ -51,7 +51,7 @@ public class GameService {
     }
     private boolean checkWinner(Game game) {
         List<String> board = game.getBoard();
-        String symbol = game.getCurrentPlayer().getSymbol();
+        String symbol = game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2().getSymbol() : game.getPlayer1().getSymbol();
 
         // Check rows, columns, and diagonals
         for (int i = 0; i < 3; i++) {
@@ -70,22 +70,25 @@ public class GameService {
     public void switchPlayer(Game game){
         game.setCurrentPlayer(game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2() : game.getPlayer1());
     }
+    public Game getGame(Long gameId) {
+        return gameRepository.findById(gameId)
+                .orElseThrow(() -> new IllegalArgumentException("Game not found"));
+    }
     public Game playGame(Long gameId, int position, int answer, Long quizId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
+        switchPlayer(game);
         Question question = getRandomQuestion(quizId);
         if (isCorrectAnswer(question, answer) && game.getBoard().get(position).isEmpty()) {
             List<String> updatedBoard = new ArrayList<>(game.getBoard());
-            updatedBoard.set(position, game.getCurrentPlayer().getSymbol());
+            String symbol = game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2().getSymbol() : game.getPlayer1().getSymbol();
+            updatedBoard.set(position, symbol);
             game.setBoard(updatedBoard);
 
             if (checkWinner(game)) {
-                game.setWinner(game.getCurrentPlayer().getName());
+                game.setWinner(game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2().getName() : game.getPlayer1().getName());
             } else if (isBoardGameFull(game)) {
                 game.setWinner("Tie");
-            } else {
-                switchPlayer(game);
             }
         }
         return gameRepository.save(game);
