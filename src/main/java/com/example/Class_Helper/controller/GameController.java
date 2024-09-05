@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/game")
 public class GameController {
@@ -51,12 +53,9 @@ public class GameController {
     }
     @PostMapping("/{gameId}/play")
     @ResponseBody
-    public ResponseEntity<Game> playGame(@PathVariable Long gameId,
-                                         @RequestParam Long quizId,
-                                         @RequestParam int answer,
-                                         @RequestParam int position) {
-        Game updatedGame = gameService.playGame(gameId, position, answer, quizId);
-        return ResponseEntity.ok(updatedGame);
+    public ResponseEntity<Map<String, Object>> playGame(@PathVariable Long gameId, @RequestParam Long quizId, @RequestParam int answer, @RequestParam int position) {
+        Map<String, Object> result = gameService.playGame(gameId, position, answer, quizId);
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/{gameId}")
     public String getGame(@PathVariable Long gameId, Model model) {

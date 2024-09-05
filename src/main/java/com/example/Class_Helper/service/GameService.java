@@ -10,11 +10,10 @@ import com.example.Class_Helper.repository.QuizRepository;
 import com.example.Class_Helper.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class GameService {
@@ -24,6 +23,7 @@ public class GameService {
     private QuizRepository quizRepository;
     @Autowired
     private StudentRepository studentRepository;
+    private static final Logger logger = LoggerFactory.getLogger(GameService.class);
     public Game createGame(Student player1, Student player2, Long quizId) {
         Game game = new Game();
         game.setCurrentPlayer(player1);
@@ -51,7 +51,7 @@ public class GameService {
     }
     private boolean checkWinner(Game game) {
         List<String> board = game.getBoard();
-        String symbol = game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2().getSymbol() : game.getPlayer1().getSymbol();
+        String symbol = game.getCurrentPlayer().getSymbol();
 
         // Check rows, columns, and diagonals
         for (int i = 0; i < 3; i++) {
@@ -74,23 +74,36 @@ public class GameService {
         return gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
     }
-    public Game playGame(Long gameId, int position, int answer, Long quizId) {
+    public Map<String, Object> playGame(Long gameId, int position, int answer, Long quizId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
-        switchPlayer(game);
+
         Question question = getRandomQuestion(quizId);
-        if (isCorrectAnswer(question, answer) && game.getBoard().get(position).isEmpty()) {
+        boolean isCorrect = isCorrectAnswer(question, answer);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("isCorrect", isCorrect);
+
+        if (isCorrect && game.getBoard().get(position).isEmpty()) {
             List<String> updatedBoard = new ArrayList<>(game.getBoard());
-            String symbol = game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2().getSymbol() : game.getPlayer1().getSymbol();
-            updatedBoard.set(position, symbol);
+            updatedBoard.set(position, game.getCurrentPlayer().getSymbol());
             game.setBoard(updatedBoard);
 
             if (checkWinner(game)) {
-                game.setWinner(game.getCurrentPlayer().equals(game.getPlayer1()) ? game.getPlayer2().getName() : game.getPlayer1().getName());
+                game.setWinner(game.getCurrentPlayer().getName());
             } else if (isBoardGameFull(game)) {
                 game.setWinner("Tie");
             }
         }
-        return gameRepository.save(game);
+        logger.info("Question: {}, User answer: {}, Correct answer: {}, isCorrect: {}",
+                question.getQuestionText(), answer, question.getCorrectOptionIndex(), isCorrect);
+
+        // Switch player after the move, regardless of the answer correctness
+        switchPlayer(game);
+
+        game = gameRepository.save(game);
+        result.put("game", game);
+
+        return result;
     }
 }
