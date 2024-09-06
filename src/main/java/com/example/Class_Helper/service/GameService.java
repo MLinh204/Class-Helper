@@ -35,16 +35,21 @@ public class GameService {
         game.setBoard(new ArrayList<>(List.of("", "", "", "", "", "", "", "", "")));
         return gameRepository.save(game);
     }
-    public Question getRandomQuestion(Long quizId) {
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new IllegalArgumentException("Quiz not found"));
+    public Question getRandomQuestion(Long gameId) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new IllegalArgumentException("Game not found"));
 
+        Quiz quiz = game.getQuizCategory();
         List<Question> questions = quiz.getQuestions();
         if (questions.isEmpty()) {
             throw new RuntimeException("No questions available for this quiz");
         }
 
-        return questions.get(new Random().nextInt(questions.size()));
+        Question randomQuestion = questions.get(new Random().nextInt(questions.size()));
+        game.setCurrentQuestion(randomQuestion);
+        gameRepository.save(game);
+
+        return randomQuestion;
     }
     public boolean isCorrectAnswer(Question question, int answer){
         return question.getCorrectOptionIndex() == answer;
@@ -74,12 +79,19 @@ public class GameService {
         return gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
     }
-    public Map<String, Object> playGame(Long gameId, int position, int answer, Long quizId) {
+    public Map<String, Object> playGame(Long gameId, int position, int answer) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
 
-        Question question = getRandomQuestion(quizId);
-        boolean isCorrect = isCorrectAnswer(question, answer);
+        Question currentQuestion = game.getCurrentQuestion();
+        if (currentQuestion == null) {
+            throw new IllegalStateException("No current question set for this game");
+        }
+
+        boolean isCorrect = isCorrectAnswer(currentQuestion, answer);
+
+        logger.info("Question: {}, User answer: {}, Correct answer: {}, isCorrect: {}",
+                currentQuestion.getQuestionText(), answer, currentQuestion.getCorrectOptionIndex(), isCorrect);
 
         Map<String, Object> result = new HashMap<>();
         result.put("isCorrect", isCorrect);
@@ -95,12 +107,8 @@ public class GameService {
                 game.setWinner("Tie");
             }
         }
-        logger.info("Question: {}, User answer: {}, Correct answer: {}, isCorrect: {}",
-                question.getQuestionText(), answer, question.getCorrectOptionIndex(), isCorrect);
 
-        // Switch player after the move, regardless of the answer correctness
         switchPlayer(game);
-
         game = gameRepository.save(game);
         result.put("game", game);
 

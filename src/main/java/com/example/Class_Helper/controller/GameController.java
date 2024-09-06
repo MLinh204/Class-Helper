@@ -52,9 +52,11 @@ public class GameController {
         return "game";
     }
     @PostMapping("/{gameId}/play")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> playGame(@PathVariable Long gameId, @RequestParam Long quizId, @RequestParam int answer, @RequestParam int position) {
-        Map<String, Object> result = gameService.playGame(gameId, position, answer, quizId);
+    public ResponseEntity<Map<String, Object>> playGame(
+            @PathVariable Long gameId,
+            @RequestParam int position,
+            @RequestParam int answer) {
+        Map<String, Object> result = gameService.playGame(gameId, position, answer);
         return ResponseEntity.ok(result);
     }
     @GetMapping("/{gameId}")
@@ -64,8 +66,9 @@ public class GameController {
         return "game";
     }
     @GetMapping("/{gameId}/question")
-    @ResponseBody
-    public Question getQuestion(@PathVariable Long gameId, @RequestParam Long quizId, @RequestParam int position) {
-        return gameService.getRandomQuestion(quizId);
+    public ResponseEntity<Question> getQuestion(@PathVariable Long gameId) {
+        Question question = gameService.getRandomQuestion(gameId);
+        return ResponseEntity.ok(question);
     }
+
 }

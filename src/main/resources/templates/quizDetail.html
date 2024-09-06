@@ -130,7 +130,11 @@
                 <div class="correct-option">
                     <label for="editCorrectOptionIndex">Correct Option:</label>
                     <select id="editCorrectOptionIndex" name="correctOptionIndex" required>
-                        <option th:value="${question.correctOptionIndex}" th:text="'Option ' + (${question.correctOptionIndex} + 1)"></option>
+                        <option th:each="option, optionStat : ${question.options}"
+                                th:value="${optionStat.index}"
+                                th:text="'Option ' + (${optionStat.index} + 1)"
+                                th:selected="${optionStat.index == question.correctOptionIndex}">
+                        </option>
                     </select>
                 </div>
                 <div class="modal-buttons">

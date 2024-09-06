@@ -14,6 +14,9 @@ public class Game {
     private Student currentPlayer;
 
     @ManyToOne
+    private Question currentQuestion;
+
+    @ManyToOne
     private Student player1;
     @ManyToOne
     private Student player2;
@@ -78,5 +81,13 @@ public class Game {
 
     public void setQuizCategory(Quiz quizCategory) {
         this.quizCategory = quizCategory;
+    }
+
+    public Question getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    public void setCurrentQuestion(Question currentQuestion) {
+        this.currentQuestion = currentQuestion;
     }
 }
