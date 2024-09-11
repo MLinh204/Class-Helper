@@ -1,0 +1,119 @@
+/* Inherit styles from quiz.css */
+@import url('quiz.css');
+
+/* Additional styles for Quiz Detail page */
+
+.body {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.question-holder {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #3f51b5;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.edit-btn:hover {
+    background-color: #303f9f;
+}
+
+.question-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-right: 60px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.radio-button {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #3f51b5;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.option-text {
+    margin: 0;
+}
+
+.correct-answer {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #4caf50;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #3f51b5;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Modal styles specific to Quiz Detail page */
+#addQuestion .modal-content,
+[id^="editQuestion-"] .modal-content {
+    background-color: rgba(0, 0, 0, .8);
+    color: white;
+}
+
+#addQuestion h2,
+[id^="editQuestion-"] h2 {
+    color: antiquewhite;
+}
+
+.input input[type="text"],
+.input select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: black;
+}
+
+/* Responsive design for Quiz Detail page */
+@media (max-width: 600px) {
+    .question-holder {
+        padding: 15px;
+    }
+
+    .question-text {
+        font-size: 16px;
+        padding-right: 40px;
+    }
+
+    .edit-btn {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+}

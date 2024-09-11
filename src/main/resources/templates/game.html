@@ -10,8 +10,8 @@
 <div class="container mt-5">
     <h1 class="text-center mb-4">Tic-Tac-Toe Quiz Game</h1>
 
-    <div th:if="${game != null and game.winner == null}">
-        <h2>Current Player: <span th:text="${game.currentPlayer.name}"></span></h2>
+    <div class="game-container" th:if="${game != null and game.winner == null}">
+        <h2 style="border-bottom: 1px solid;">Current Player: <span th:text="${game.currentPlayer.name}"></span></h2>
 
         <div class="board mt-4">
             <div th:each="cell, status : ${game.board}" class="cell" th:attr="data-index=${status.index}" th:text="${cell}"></div>

@@ -1,22 +1,65 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+}
+
+h1 {
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.game-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color: #3498db;
+    font-size: 1.5rem;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
 .board {
     display: grid;
     grid-template-columns: repeat(3, 100px);
-    grid-gap: 5px;
-    margin-top: 20px;
+    grid-gap: 10px;
+    margin-top: 30px;
+    justify-content: center;
 }
+
 .cell {
     width: 100px;
     height: 100px;
-    border: 1px solid #000;
+    border: 2px solid #3498db;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 36px;
+    font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
-.selected {
-    background-color: #e0e0e0;
+
+.cell:hover {
+    background-color: #ecf0f1;
 }
+
+.cell.selected {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -26,13 +69,60 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
 }
+
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
     max-width: 500px;
+}
+
+.modal-content h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.form-check {
+    margin-bottom: 15px;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    padding: 10px 20px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #2980b9;
+    border-color: #2980b9;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary:disabled {
+    background-color: #bdc3c7;
+    border-color: #bdc3c7;
+}
+
+@media (max-width: 576px) {
+    .board {
+        grid-template-columns: repeat(3, 80px);
+    }
+    .cell {
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+    }
 }
