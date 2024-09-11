@@ -21,7 +21,6 @@ public class Question {
     @ManyToOne
     @JoinColumn(name = "quiz_id")
     @JsonBackReference
-
     private Quiz quiz;
 
     public Long getId() {

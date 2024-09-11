@@ -3,6 +3,7 @@ package com.example.Class_Helper.controller;
 import com.example.Class_Helper.model.Question;
 import com.example.Class_Helper.model.Quiz;
 import com.example.Class_Helper.service.QuizService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +52,7 @@ public class QuizController {
     }
 
     @GetMapping("/delete/{id}")
+    @Transactional
     public String deleteQuiz(@PathVariable Long id) {
         quizService.deleteQuiz(id);
         return "redirect:/quiz";

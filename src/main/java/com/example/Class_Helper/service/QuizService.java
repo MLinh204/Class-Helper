@@ -1,9 +1,12 @@
 package com.example.Class_Helper.service;
 
+import com.example.Class_Helper.model.Game;
 import com.example.Class_Helper.model.Question;
 import com.example.Class_Helper.model.Quiz;
+import com.example.Class_Helper.repository.GameRepository;
 import com.example.Class_Helper.repository.QuestionRepository;
 import com.example.Class_Helper.repository.QuizRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +16,16 @@ import java.util.Optional;
 
 @Service
 public class QuizService {
-
+    private final QuizRepository quizRepository;
+    private final QuestionRepository questionRepository;
+    private final GameRepository gameRepository;
     @Autowired
-    private QuizRepository quizRepository;
+    public QuizService(QuizRepository quizRepository, QuestionRepository questionRepository, GameRepository gameRepository) {
+        this.quizRepository = quizRepository;
+        this.questionRepository = questionRepository;
+        this.gameRepository = gameRepository;
+    }
 
-    @Autowired
-    private QuestionRepository questionRepository;
 
     // Quiz related methods
     public List<Quiz> getAllQuiz() {
@@ -29,8 +36,31 @@ public class QuizService {
         return quizRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void deleteQuiz(Long id) {
-        quizRepository.deleteById(id);
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        // First, handle Game references
+        List<Game> games = gameRepository.findByQuizCategory(quiz);
+        for (Game game : games) {
+            game.setQuizCategory(null);
+            game.setCurrentQuestion(null);
+            gameRepository.save(game);
+        }
+
+        // Now, delete questions
+        for (Question question : quiz.getQuestions()) {
+            deleteQuestion(question.getId());
+        }
+
+        // Finally, delete the quiz
+        quizRepository.delete(quiz);
+    }
+    @Transactional
+    private void deleteQuestion(Long questionId) {
+        gameRepository.updateCurrentQuestionToNull(questionId);
+        questionRepository.deleteById(questionId);
     }
 
     public Quiz createQuiz(Quiz quiz) {
@@ -77,14 +107,14 @@ public class QuizService {
                     return questionRepository.save(question);
                 });
     }
-
+    @Transactional
     public boolean deleteQuestionByQuizId(Long quizId, Long questionId) {
         return quizRepository.findById(quizId)
                 .map(quiz -> {
                     boolean removed = quiz.getQuestions().removeIf(q -> q.getId().equals(questionId));
                     if (removed) {
                         quizRepository.save(quiz);
-                        questionRepository.deleteById(questionId);
+                        deleteQuestion(questionId);
                     }
                     return removed;
                 })

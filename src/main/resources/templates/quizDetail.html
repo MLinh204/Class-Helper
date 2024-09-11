@@ -76,7 +76,7 @@
 <section class="header">
     <h3 th:text="${quiz.name}"></h3>
     <div class="custom-btn">
-        <a class="button button-primary button-sm" href="#">Start Game</a>
+        <a class="button button-primary button-sm" th:href="@{/game/new}">Start Game</a>
         <a class="button button-primary button-sm" href="#addQuestion">Add Question</a>
     </div>
 </section>

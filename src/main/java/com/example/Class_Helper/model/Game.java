@@ -14,6 +14,7 @@ public class Game {
     private Student currentPlayer;
 
     @ManyToOne
+    @JoinColumn(name = "current_question_id")
     private Question currentQuestion;
 
     @ManyToOne
