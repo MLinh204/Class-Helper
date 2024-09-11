@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" th:href="@{/css/whiteBoard.css}">
+  <link rel="stylesheet" th:href="@{/css/clock.css}">
 </head>
 <body>
 <div class="navigation">
@@ -21,12 +22,31 @@
     <button id="typeBtn" class="btn btn-primary">Typing</button>
     <button id="eraseBtn" class="btn btn-primary">Removing</button>
     <button id="clearBtn" class="btn btn-primary">Remove All</button>
+    <button id="timerBtn" class="btn btn-primary">Timer</button>
   </div>
   <div style="position: relative;">
     <canvas id="canvas" width="800" height="600"></canvas>
   </div>
 </div>
 
+<!-- Clock Popup -->
+<div id="clockPopup" class="clock-popup">
+  <div class="button-mode">
+    <button id="countdownbtn">Count Down</button>
+    <button id="timerbtn">Timer</button>
+  </div>
+  <div class="timer-box" style="width: 100%; margin-top:100px;">
+    <div class="controls" style="position: absolute; top: 20px; display: flex; gap: 0; left: -10px;">
+      <button id="resetBtn">Reset</button>
+      <button id="startBtn">Start</button>
+      <button id="stopBtn">Stop</button>
+    </div>
+    <div class="display" id="display">00:00</div>
+  </div>
+  <input type="text" id="timeInput" placeholder="Enter time (mm:ss)">
+</div>
+
 <script th:src="@{/js/whiteBoard.js}"></script>
+<script th:src="@{/js/clock.js}"></script>
 </body>
 </html>

@@ -13,6 +13,25 @@ document.addEventListener('DOMContentLoaded', function() {
     let padding = 20;
     let maxWidth = canvas.width - padding * 2;
 
+    const timerBtn = document.getElementById('timerBtn');
+        const clockPopup = document.getElementById('clockPopup');
+
+        timerBtn.addEventListener('click', function() {
+            clockPopup.classList.toggle('show');
+        });
+
+        // Close popup when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!clockPopup.contains(event.target) && event.target !== timerBtn) {
+                clockPopup.classList.remove('show');
+            }
+        });
+
+        // Prevent canvas interactions when interacting with the popup
+        clockPopup.addEventListener('mousedown', function(event) {
+            event.stopPropagation();
+        });
+
     function startAction(e) {
         isDrawing = true;
         [startX, startY] = [e.offsetX, e.offsetY];
