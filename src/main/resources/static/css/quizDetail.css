@@ -81,7 +81,7 @@
 /* Modal styles specific to Quiz Detail page */
 #addQuestion .modal-content,
 [id^="editQuestion-"] .modal-content {
-    background-color: rgba(0, 0, 0, .8);
+    background-color: #7b85bb;
     color: white;
 }
 
@@ -99,6 +99,7 @@
     border-radius: 4px;
     background-color: white;
     color: black;
+    background-color: #dfd9d9;
 }
 
 /* Responsive design for Quiz Detail page */

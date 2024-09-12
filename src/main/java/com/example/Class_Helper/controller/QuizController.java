@@ -48,7 +48,7 @@ public class QuizController {
             existingQuiz.setName(updatedQuiz.getName());
             quizService.updateQuiz(existingQuiz);
         }
-        return "redirect:/quiz/" + id;
+        return "redirect:/quiz";
     }
 
     @GetMapping("/delete/{id}")

@@ -41,6 +41,7 @@ public class QuizService {
     }
 
     public Quiz updateQuiz(Quiz updatedQuiz) {
+        logger.info("Quiz: {}", updatedQuiz.getName());
         return quizRepository.save(updatedQuiz);
     }
 
@@ -78,6 +79,7 @@ public class QuizService {
                     question.setCorrectOptionIndex(updatedQuestion.getCorrectOptionIndex());
                     return questionRepository.save(question);
                 });
+
     }
 
     public boolean deleteQuestionByQuizId(Long quizId, Long questionId) {
