@@ -3,18 +3,29 @@ package com.example.Class_Helper.controller;
 import com.example.Class_Helper.model.Student;
 import com.example.Class_Helper.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/students")
 public class StudentController {
     @Autowired
     private StudentService studentService;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @GetMapping
     public String listStudents(Model model){
@@ -44,7 +55,33 @@ public class StudentController {
         return "createStudentForm";
     }
     @PostMapping("/create")
-    public String createStudent(@ModelAttribute Student student){
+    public String createStudent(@ModelAttribute Student student,
+                                @RequestParam("profilePicture") MultipartFile file)
+            throws IOException {
+        if (!file.isEmpty()) {
+            // Generate a unique file name
+            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String newFileName = UUID.randomUUID().toString() + fileExtension;
+
+            // Create the full path
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(newFileName);
+
+            // Copy the file, replacing existing files
+            try {
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new IOException("Could not store file " + newFileName + ". Please try again!", e);
+            }
+
+            student.setProfilePictureName(newFileName);
+        }
+
         studentService.createStudent(student);
         return "redirect:/students";
     }
@@ -66,16 +103,45 @@ public class StudentController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent){
+    public String updateStudent(@PathVariable Long id,
+                                @ModelAttribute Student updatedStudent,
+                                @RequestParam("profilePicture") MultipartFile file) throws IOException {
         Student existingStudent = studentService.getStudentById(id);
-        existingStudent.setName(updatedStudent.getName());
-        existingStudent.setHeart(updatedStudent.getHeart());
-        existingStudent.setPowerType(updatedStudent.getPowerType());
-        existingStudent.setPoint(updatedStudent.getPoint());
-        existingStudent.setLevel(updatedStudent.getLevel());
-        existingStudent.setProfilePicture(updatedStudent.getProfilePicture());
 
-        studentService.updateStudent(updatedStudent);
+        existingStudent.setName(updatedStudent.getName());
+        existingStudent.setPowerType(updatedStudent.getPowerType());
+        existingStudent.setLevel(updatedStudent.getLevel());
+
+        if (!file.isEmpty()) {
+            // Generate a unique file name
+            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            String newFileName = UUID.randomUUID().toString() + fileExtension;
+
+            // Create the full path
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Path filePath = uploadPath.resolve(newFileName);
+
+            // Copy the file, replacing existing files
+            try {
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new IOException("Could not store file " + newFileName + ". Please try again!", e);
+            }
+
+            // Delete the old profile picture if it exists
+            if (existingStudent.getProfilePictureName() != null) {
+                Path oldFilePath = uploadPath.resolve(existingStudent.getProfilePictureName());
+                Files.deleteIfExists(oldFilePath);
+            }
+
+            existingStudent.setProfilePictureName(newFileName);
+        }
+
+        studentService.updateStudent(existingStudent);
         return "redirect:/students/" + id;
     }
     @GetMapping("/random")

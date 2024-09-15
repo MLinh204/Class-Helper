@@ -84,7 +84,7 @@
                   <div class="col-md-6 col-lg-4 wow-outer" th:each="student : ${students}">
                     <div class="wow fadeInUp">
                       <article class="box-causes">
-                        <div class="box-causes-img"><img class="student-img" th:src="${student.profilePicture}" alt="" width="372" height="396"/><a class="button button-sm button-primary" th:href="@{/students/{id}(id=${student.id})}">View Student</a>
+                        <div class="box-causes-img"><img class="student-img" th:src="@{'/uploads/' + ${student.profilePictureName}}" alt="" width="372" height="396"/><a class="button button-sm button-primary" th:href="@{/students/{id}(id=${student.id})}">View Student</a>
                         </div>
                         <h4 class="font-weight-medium"><a th:href="@{/students/{id}(id=${student.id})}" th:text="${student.name}"></a></h4>
                         <p class="box-causes-donate" th:text="${student.powerType}">

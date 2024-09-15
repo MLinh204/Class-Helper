@@ -62,12 +62,12 @@
         <div class="container">
     <div class="Wrapper">
         <div class="form-container">
-            <form th:action="@{/students/create}" th:object="${student}" method="post">
+            <form th:action="@{/students/create}" th:object="${student}" method="post" enctype="multipart/form-data">
                 <div class="input">
-                </div>
                     <input type="text" th:field="*{name}" placeholder="Name*" required>
+                </div>
                 <div class="input">
-                    <input type="text" th:field="*{profilePicture}" placeholder="URL to your profile picture*" required>
+                    <input type="file" name="profilePicture" accept="image/*" required>
                 </div>
                 <div class="input">
                     <select th:field="*{powerType}" class="form-select" required>

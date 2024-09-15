@@ -9,7 +9,7 @@ public class Student {
     private Long id;
     private String name;
     private String powerType;
-    private String profilePicture;
+    private String profilePictureName;
     private String symbol;
     @Column(nullable = false)
     private int level = 1;
@@ -46,12 +46,12 @@ public class Student {
         this.powerType = powerType;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public String getProfilePictureName() {
+        return profilePictureName;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfilePictureName(String profilePictureName) {
+        this.profilePictureName = profilePictureName;
     }
 
     public double getHeart() {
