@@ -10,6 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentQuestion = null;
     let currentPlayer = 'X'; // This should be dynamically set based on the game state
 
+    // Create popup element
+    const popup = document.createElement('div');
+    popup.id = 'popup';
+    popup.style.display = 'none';
+    document.body.appendChild(popup);
+
+    function showPopup(message, isSuccess = true) {
+        popup.textContent = message;
+        popup.className = isSuccess ? 'success' : 'error';
+        popup.style.display = 'block';
+        setTimeout(() => {
+            popup.style.display = 'none';
+        }, 3000);
+    }
+
     function selectCell(cell) {
         if (cell.innerText === '') {
             if (selectedCell) {
@@ -33,7 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentQuestion = data;
                 displayQuestion(data);
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                showPopup('Failed to fetch question. Please try again.', false);
+            });
     }
 
     function displayQuestion(question) {
@@ -66,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (updatedGame.winner) {
-            alert(updatedGame.winner === 'Tie' ? "It's a tie!" : `${updatedGame.winner} wins!`);
+            showPopup(updatedGame.winner === 'Tie' ? "It's a tie!" : `${updatedGame.winner} wins!`);
         }
     }
 
@@ -77,42 +95,42 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     if (gameForm) {
-           gameForm.addEventListener('submit', function(event) {
-               event.preventDefault();
+        gameForm.addEventListener('submit', function(event) {
+            event.preventDefault();
 
-               const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-               if (!selectedAnswer) {
-                   alert('Please select an answer before submitting.');
-                   return;
-               }
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (!selectedAnswer) {
+                showPopup('Please select an answer before submitting.', false);
+                return;
+            }
 
-               const selectedAnswerValue = parseInt(selectedAnswer.value);
+            const selectedAnswerValue = parseInt(selectedAnswer.value);
 
-               fetch(gameForm.action, {
-                   method: 'POST',
-                   body: new FormData(gameForm)
-               }).then(response => {
-                   if (response.ok) {
-                       return response.json();
-                   }
-                   throw new Error('Network response was not ok.');
-               }).then(result => {
-                     console.log('API Response:', result);
-                     if (result.isCorrect) {
-                         console.log('Answer is correct');
-                         alert('Correct!');
-                     } else {
-                         console.log('Answer is incorrect');
-                         alert('Not Correct!');
-                     }
-                   updateGameState(result.game);
-                   questionModal.style.display = 'none';
-               }).catch(error => {
-                   console.error('Error:', error);
-                   alert('An error occurred. Please try again.');
-               });
-           });
-       }
+            fetch(gameForm.action, {
+                method: 'POST',
+                body: new FormData(gameForm)
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            }).then(result => {
+                console.log('API Response:', result);
+                if (result.isCorrect) {
+                    console.log('Answer is correct');
+                    showPopup('Correct!', true);
+                } else {
+                    console.log('Answer is incorrect');
+                    showPopup('Not Correct!', false);
+                }
+                updateGameState(result.game);
+                questionModal.style.display = 'none';
+            }).catch(error => {
+                console.error('Error:', error);
+                showPopup('An error occurred. Please try again.', false);
+            });
+        });
+    }
 
     window.onclick = function(event) {
         if (event.target == questionModal) {
