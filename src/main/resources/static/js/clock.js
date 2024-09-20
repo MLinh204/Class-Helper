@@ -12,11 +12,24 @@ document.addEventListener('DOMContentLoaded', function() {
     let isCountdown = true;
     let isRunning = false;
 
+    const popup = document.createElement('div');
+    popup.id = 'popup';
+    popup.style.display = 'none';
+    document.body.appendChild(popup);
+
 
     function updateDisplay(seconds) {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         display.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+    function showPopup(message, isFinish=true){
+        popup.textContent = message;
+        popup.className = isFinish ? "success" : "error";
+        popup.style.display = 'block';
+        setTimeout(() =>{
+            popup.style.display ='none';
+        },10000);
     }
     function stop(){
         clearInterval(intervalId);
@@ -35,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     clearInterval(intervalId);
                     isRunning = false;
-                    alert('Countdown finished!');
+                    showPopup('Time is up', true);
                     isRunning=false;
                 }
             } else {
