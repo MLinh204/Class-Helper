@@ -109,8 +109,10 @@ public class GameService {
 
             if (checkWinner(game)) {
                 game.setWinner(game.getCurrentPlayer().getName());
+                deleteGame(game.getId());
             } else if (isBoardGameFull(game)) {
                 game.setWinner("Tie");
+                deleteGame(game.getId());
             }
         }
 
@@ -119,5 +121,9 @@ public class GameService {
         result.put("game", game);
 
         return result;
+    }
+
+    public void deleteGame(Long gameId){
+        gameRepository.deleteById(gameId);
     }
 }
