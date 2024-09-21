@@ -67,7 +67,7 @@ public class GameController {
     }
     @GetMapping("/{gameId}/question")
     public ResponseEntity<Question> getQuestion(@PathVariable Long gameId) {
-        Question question = gameService.getRandomQuestion(gameId);
+        Question question = gameService.getQuestion(gameId);
         return ResponseEntity.ok(question);
     }
 

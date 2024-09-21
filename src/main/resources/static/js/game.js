@@ -45,15 +45,14 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`/game/${gameId}/question?quizId=${quizId}&position=${position}`)
             .then(response => response.json())
             .then(data => {
-                currentQuestion = data;
-                displayQuestion(data);
+                    currentQuestion = data;
+                    displayQuestion(data);
             })
             .catch(error => {
                 console.error('Error:', error);
                 showPopup('Failed to fetch question. Please try again.', false);
             });
     }
-
     function displayQuestion(question) {
         questionText.textContent = question.questionText;
         optionsContainer.innerHTML = '';
@@ -85,6 +84,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (updatedGame.winner) {
             showPopup(updatedGame.winner === 'Tie' ? "It's a tie!" : `${updatedGame.winner} wins!`);
+            document.querySelector('.game-container').style.display = 'none';
+                        const winnerMessage = document.createElement('div');
+                        winnerMessage.innerHTML = `
+                            <h2>${updatedGame.winner === 'Tie' ? "It's a Tie!" : `Winner: ${updatedGame.winner}`}</h2>
+                            <a href="/game/new" class="btn btn-primary mt-3">Start New Game</a>
+                        `;
+                        document.querySelector('.container').appendChild(winnerMessage);
         }
     }
 

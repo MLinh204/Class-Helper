@@ -35,7 +35,7 @@ public class GameService {
         game.setBoard(new ArrayList<>(List.of("", "", "", "", "", "", "", "", "")));
         return gameRepository.save(game);
     }
-    public Question getRandomQuestion(Long gameId) {
+    public Question getQuestion(Long gameId) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
 
@@ -45,11 +45,17 @@ public class GameService {
             throw new RuntimeException("No questions available for this quiz");
         }
 
-        Question randomQuestion = questions.get(new Random().nextInt(questions.size()));
-        game.setCurrentQuestion(randomQuestion);
+        int currentIndex = game.getCurrentQuestionIndex();
+        if (currentIndex>=questions.size()){
+            game.setCurrentQuestionIndex(0);
+            currentIndex=0;
+        }
+        Question currentQuestion = questions.get(currentIndex);
+        game.setCurrentQuestion(currentQuestion);
+        game.setCurrentQuestionIndex(currentIndex+1);
         gameRepository.save(game);
 
-        return randomQuestion;
+        return currentQuestion;
     }
     public boolean isCorrectAnswer(Question question, int answer){
         return question.getCorrectOptionIndex() == answer;

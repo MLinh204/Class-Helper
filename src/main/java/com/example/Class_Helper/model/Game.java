@@ -27,6 +27,7 @@ public class Game {
     private Quiz quizCategory;
 
     private String winner;
+    private int currentQuestionIndex = 0;
 
     public Long getId() {
         return id;
@@ -90,5 +91,13 @@ public class Game {
 
     public void setCurrentQuestion(Question currentQuestion) {
         this.currentQuestion = currentQuestion;
+    }
+
+    public int getCurrentQuestionIndex() {
+        return currentQuestionIndex;
+    }
+
+    public void setCurrentQuestionIndex(int currentQuestionIndex) {
+        this.currentQuestionIndex = currentQuestionIndex;
     }
 }
