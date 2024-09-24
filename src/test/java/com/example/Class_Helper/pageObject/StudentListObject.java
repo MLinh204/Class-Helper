@@ -17,6 +17,7 @@ public class StudentListObject {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
     public List<WebElement> getListStudent(){
-        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div[@class='row row-50']")));
+        WebElement container = driver.findElement(By.xpath("//div[@class='row row-50']"));
+        return container.findElements(By.xpath("//div[@class='col-md-6 col-lg-4 wow-outer']"));
     }
 }
