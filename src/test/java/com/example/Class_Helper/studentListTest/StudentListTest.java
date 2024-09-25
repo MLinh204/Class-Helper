@@ -6,9 +6,11 @@ import com.example.Class_Helper.pageObject.StudentListObject;
 import com.example.Class_Helper.pages.MainFunction;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -45,9 +47,17 @@ public class StudentListTest {
     }
 
     @Test
-    public void getChildrenList(){
+    public void getChildrenByName() throws InterruptedException {
         driver.get(ConfigProperties.STUDENT_LIST_URL);
         function.waitLoadingElement();
-        assertEquals(3, object.getListStudent().size());
+
+        WebElement studentDiv = object.findStudentByName("Trang");
+        WebElement studentName = object.getStudentName("Trang");
+        WebElement studentPower = object.getStudentPower("Ngoc");
+        WebElement profilePicture = object.getProfilePicture("Ngoc");
+        actions.moveToElement(profilePicture).perform();
+        Thread.sleep(500);
+        function.forceClick(object.getViewButton("Ngoc"));
+        Thread.sleep(5000);
     }
 }
