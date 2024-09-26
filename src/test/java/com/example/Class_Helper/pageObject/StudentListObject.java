@@ -4,6 +4,7 @@ import com.example.Class_Helper.pages.MainFunction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,9 +15,11 @@ public class StudentListObject {
     private WebDriver driver;
     private WebDriverWait wait;
     private MainFunction function;
+    private Actions actions;
     public StudentListObject(WebDriver driver){
         this.driver = driver;
         this.function = new MainFunction(driver);
+        this.actions = new Actions(driver);
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
     public List<WebElement> getListStudent(){
@@ -49,8 +52,11 @@ public class StudentListObject {
         WebElement container = findStudentByName(name);
         WebElement viewBtn = container.findElement(By.xpath(".//a[@class='button button-sm button-primary']"));
         function.scrollIntoView(viewBtn);
+        actions.moveToElement(viewBtn).perform();
         wait.until(ExpectedConditions.visibilityOf(viewBtn));
-
         return viewBtn;
+    }
+    public WebElement getH3(){
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3")));
     }
 }

@@ -1,5 +1,6 @@
 package com.example.Class_Helper.pageObject;
 
+import com.example.Class_Helper.pages.MainFunction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -12,13 +13,11 @@ import java.time.Duration;
 public class HomePageObject {
     private WebDriver driver;
     private WebDriverWait wait;
+    private MainFunction function;
     public HomePageObject(WebDriver driver){
         this.driver = driver;
+        this.function = new MainFunction(driver);
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    }
-    private void scrollIntoView(WebElement element) {
-        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-        jsExecutor.executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
     public WebElement getLogo(){
@@ -30,12 +29,12 @@ public class HomePageObject {
     }
     public WebElement getFunctionButton(){
         WebElement functions = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div//button[@class='button button-primary button-sm']")));
-        scrollIntoView(functions);
+        function.scrollIntoView(functions);
         return functions;
     }
     public WebElement getFooter(){
         WebElement footer = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//footer[@class='section footer-minimal context-dark']")));
-        scrollIntoView(footer);
+        function.scrollIntoView(footer);
         return footer;
     }
 

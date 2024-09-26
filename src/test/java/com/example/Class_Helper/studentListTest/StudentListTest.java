@@ -5,6 +5,7 @@ import com.example.Class_Helper.pageObject.HomePageObject;
 import com.example.Class_Helper.pageObject.StudentListObject;
 import com.example.Class_Helper.pages.MainFunction;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,8 +18,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StudentListTest {
     private WebDriver driver;
@@ -47,17 +50,53 @@ public class StudentListTest {
     }
 
     @Test
-    public void getChildrenByName() throws InterruptedException {
+    public void checkTitle() {
         driver.get(ConfigProperties.STUDENT_LIST_URL);
         function.waitLoadingElement();
-
-        WebElement studentDiv = object.findStudentByName("Trang");
-        WebElement studentName = object.getStudentName("Trang");
-        WebElement studentPower = object.getStudentPower("Ngoc");
-        WebElement profilePicture = object.getProfilePicture("Ngoc");
-        actions.moveToElement(profilePicture).perform();
-        Thread.sleep(500);
-        function.forceClick(object.getViewButton("Ngoc"));
-        Thread.sleep(5000);
+        System.out.println("Title: " + driver.getTitle());
+        assertEquals("Student List", driver.getTitle());
+    }
+    @Test
+    public void checkUI(){
+        driver.get(ConfigProperties.STUDENT_LIST_URL);
+        function.waitLoadingElement();
+        assertEquals("Student List", object.getH3().getText());
+        assertEquals(3, object.getListStudent().size());
+    }
+    @Test
+    public void checkStudentElement() throws InterruptedException {
+        driver.get(ConfigProperties.STUDENT_LIST_URL);
+        for (WebElement student : object.getListStudent()){
+            WebElement studentName = student.findElement(By.xpath(".//h4//a"));
+            WebElement profilePicture = student.findElement(By.xpath(".//img"));
+            WebElement studentPower = student.findElement(By.xpath(".//p"));
+            Thread.sleep(500);
+            assertTrue(studentName.isDisplayed(), "Student name should be displayed");
+            System.out.println("Student name: " + studentName.getText());
+            assertTrue(profilePicture.isDisplayed(), "profile picture should be displayed");
+            System.out.println("Profile tag: " + profilePicture.getTagName());
+            assertTrue(studentPower.isDisplayed(), "Power should be displayed");
+            System.out.println("Power: " + studentPower.getText());
+        }
+    }
+    @Test
+    public void checkDisplayOfViewBtn() throws InterruptedException {
+        driver.get(ConfigProperties.STUDENT_LIST_URL);
+        for (WebElement student : object.getListStudent()){
+            WebElement viewBtn = student.findElement(By.xpath(".//a[@class='button button-sm button-primary']"));
+            actions.moveToElement(viewBtn).perform();
+            Thread.sleep(1000);
+            assertTrue(viewBtn.isDisplayed(), "View button should be displayed");
+        }
+    }
+    @Test
+    public void selectViewBtn() throws InterruptedException {
+        driver.get(ConfigProperties.STUDENT_LIST_URL);
+        WebElement viewBtn = object.getViewButton("Cat");
+        actions.moveToElement(viewBtn).perform();
+        wait.until(ExpectedConditions.visibilityOf(viewBtn));
+        function.forceClick(viewBtn);
+        wait.until(ExpectedConditions.invisibilityOf(viewBtn));
+        assertEquals("Home", driver.getTitle());
     }
 }
