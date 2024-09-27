@@ -90,13 +90,23 @@ public class StudentListTest {
         }
     }
     @Test
-    public void selectViewBtn() throws InterruptedException {
+    public void selectViewBtn() {
         driver.get(ConfigProperties.STUDENT_LIST_URL);
         WebElement viewBtn = object.getViewButton("Cat");
         actions.moveToElement(viewBtn).perform();
         wait.until(ExpectedConditions.visibilityOf(viewBtn));
         function.forceClick(viewBtn);
         wait.until(ExpectedConditions.invisibilityOf(viewBtn));
+        assertEquals("Home", driver.getTitle());
+    }
+    @Test
+    public void selectStudentName(){
+        driver.get(ConfigProperties.STUDENT_LIST_URL);
+        WebElement studentName = object.getStudentName("Cat");
+        actions.moveToElement(studentName).perform();
+        wait.until(ExpectedConditions.visibilityOf(studentName));
+        function.forceClick(studentName);
+        wait.until(ExpectedConditions.invisibilityOf(studentName));
         assertEquals("Home", driver.getTitle());
     }
 }
