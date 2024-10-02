@@ -1,4 +1,4 @@
-package com.example.Class_Helper.pageObject;
+package com.example.Class_Helper.config;
 
 public class ConfigProperties {
     public static final String BASE_URL ="http://localhost:8080";

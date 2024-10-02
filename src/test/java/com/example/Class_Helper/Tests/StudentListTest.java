@@ -1,9 +1,8 @@
-package com.example.Class_Helper.studentListTest;
+package com.example.Class_Helper.Tests;
 
-import com.example.Class_Helper.pageObject.ConfigProperties;
-import com.example.Class_Helper.pageObject.HomePageObject;
+import com.example.Class_Helper.config.ConfigProperties;
 import com.example.Class_Helper.pageObject.StudentListObject;
-import com.example.Class_Helper.pages.MainFunction;
+import com.example.Class_Helper.function.MainFunction;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +17,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

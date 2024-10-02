@@ -1,4 +1,4 @@
-package com.example.Class_Helper.pageObject;
+package com.example.Class_Helper.config;
 
 import java.io.IOException;
 import java.util.Properties;

@@ -1,4 +1,4 @@
-package com.example.Class_Helper.pages;
+package com.example.Class_Helper.function;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;

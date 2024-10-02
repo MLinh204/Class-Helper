@@ -1,6 +1,6 @@
 package com.example.Class_Helper.pageObject;
 
-import com.example.Class_Helper.pages.MainFunction;
+import com.example.Class_Helper.function.MainFunction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,6 +16,8 @@ public class StudentListObject {
     private WebDriverWait wait;
     private MainFunction function;
     private Actions actions;
+
+
     public StudentListObject(WebDriver driver){
         this.driver = driver;
         this.function = new MainFunction(driver);
