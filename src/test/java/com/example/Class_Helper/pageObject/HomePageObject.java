@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.SoftAssert;
@@ -21,6 +22,7 @@ public class HomePageObject {
         this.function = new MainFunction(driver);
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         this.softAssert = new SoftAssert();
+        PageFactory.initElements(driver, this);
     }
     @FindBy(xpath = "//img[@class='brand-logo-light']")
     private WebElement logo;
@@ -47,14 +49,25 @@ public class HomePageObject {
         WebElement functionBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
         return functionBtn;
     }
-    public void isHomePageElementVisible(){
-        softAssert.assertTrue(logo.isDisplayed());
-        softAssert.assertTrue(findNavBtnByText("Home").isDisplayed());
-        softAssert.assertTrue(findNavBtnByText("Student List").isDisplayed());
-        softAssert.assertTrue(findNavBtnByText("Quiz").isDisplayed());
-        softAssert.assertTrue(findNavBtnByText("Play Game").isDisplayed());
-        softAssert.assertTrue(functionList.isDisplayed());
+    public boolean isHomePageElementVisible(){
+        boolean title = driver.getTitle().equalsIgnoreCase("Home");
+        boolean isLogoDisplayed = logo.isDisplayed();
+        boolean isHomeBtnDisplayed = findNavBtnByText("Home").isDisplayed();
+        boolean isStudentListBtnDisplayed = findNavBtnByText("Student List").isDisplayed();
+        boolean isQuizBtnDisplayed = findNavBtnByText("Quiz").isDisplayed();
+        boolean isPlayGameBtnDisplayed = findNavBtnByText("Play Game").isDisplayed();
+        boolean isFunctionListDisplayed = functionList.isDisplayed();
+
+        boolean isBodyElementDisplayed = isLogoDisplayed && isHomeBtnDisplayed && isStudentListBtnDisplayed && isQuizBtnDisplayed && isPlayGameBtnDisplayed && isFunctionListDisplayed;
         function.scrollIntoView(footer);
-        softAssert.assertTrue(footer.isDisplayed());
+        boolean isFooterDisplayed = footer.isDisplayed();
+
+        return title && isBodyElementDisplayed && isFooterDisplayed;
+    }
+    public boolean isBodyVisible(){
+        return driver.findElement(By.xpath("//body")).isDisplayed();
+    }
+    public void clickLogo(){
+        logo.click();
     }
 }
