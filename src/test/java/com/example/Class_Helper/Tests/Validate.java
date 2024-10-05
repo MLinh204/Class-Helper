@@ -11,15 +11,21 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.SoftAssert;
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class Validate {
     private WebDriver driver;
     private HomePageObject object;
     private MainFunction function;
+    private WebDriverWait wait;
 
 
     @Before
@@ -38,6 +44,7 @@ public class Validate {
     public void theBrowserIsOpen() {
         object = new HomePageObject(driver);
         function = new MainFunction(driver);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
     @And("the user is on the Class Helper homepage")
     public void theUserIsOnTheClassHelperHomepage() {
@@ -74,7 +81,104 @@ public class Validate {
 
     @Then("user should be redirected to Student List page")
     public void userShouldBeRedirectedToStudentListPage() {
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
         assertFalse(object.isHomePageElementVisible());
         assertEquals(ConfigProperties.STUDENT_LIST_URL, driver.getCurrentUrl());
+    }
+
+    @When("user clicks Quiz button")
+    public void clickQuizBtn(){
+        object.findNavBtnByText("Quiz").click();
+    }
+    @Then("user should be redirected to Quiz page")
+    public void redirectToQuizPage(){
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
+        assertFalse(object.isHomePageElementVisible());
+        assertEquals(ConfigProperties.QUIZ_URL, driver.getCurrentUrl());
+    }
+
+    @When("user clicks Play Game button")
+    public void userClicksPlayGameButton() {
+        object.findNavBtnByText("Play Game").click();
+    }
+
+    @Then("user should be redirected to Game page")
+    public void userShouldBeRedirectedToGamePage() {
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
+        assertFalse(object.isHomePageElementVisible());
+        assertEquals(ConfigProperties.NEW_GAME_URL, driver.getCurrentUrl());
+    }
+
+    @When("user clicks Functions button")
+    public void userClicksFunctionsButton() {
+        object.clickFunctionsBtn();
+    }
+
+    @Then("dropdown list of functions should be displayed")
+    public void dropdownListOfFunctionsShouldBeDisplayed() {
+        assertTrue(object.isDropdownFunctionsDisplayed());
+    }
+
+    @And("user clicks Add Student button")
+    public void userClicksAddStudentButton() {
+        object.clickFunctionsByLinkText("Add Student");
+    }
+
+    @Then("user should be redirected to Add Student Page")
+    public void userShouldBeRedirectedToAddStudentPage() {
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
+        assertFalse(object.isHomePageElementVisible());
+        assertEquals(ConfigProperties.CREATE_STUDENT_URL, driver.getCurrentUrl());
+    }
+
+    @And("user clicks Random Student button")
+    public void userClicksRandomStudentButton() {
+        object.clickFunctionsByLinkText("Random Student");
+    }
+
+    @Then("user should be redirected to Random Student Page")
+    public void userShouldBeRedirectedToRandomStudentPage() {
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
+        assertFalse(object.isHomePageElementVisible());
+        assertEquals(ConfigProperties.RANDOM_STUDENT_URL, driver.getCurrentUrl());
+    }
+
+    @And("user clicks White Board button")
+    public void userClicksWhiteBoardButton() {
+        object.clickFunctionsByLinkText("White Board");
+    }
+
+    @Then("user should be redirected to White Board Page")
+    public void userShouldBeRedirectedToWhiteBoardPage() {
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
+        assertFalse(object.isHomePageElementVisible());
+        assertEquals(ConfigProperties.WHITEBOARD_URL, driver.getCurrentUrl());
+    }
+
+    @And("user clicks Clock button")
+    public void userClicksClockButton() {
+        object.clickFunctionsByLinkText("Clock");
+    }
+
+    @Then("user should be redirected to Clock Page")
+    public void userShouldBeRedirectedToClockPage() {
+        wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("Home")));
+        assertFalse(object.isHomePageElementVisible());
+        assertEquals(ConfigProperties.CLOCK_URL, driver.getCurrentUrl());
+    }
+
+    @When("user scrolls to footer")
+    public void userScrollsToFooter() {
+        object.scrollToFooter();
+    }
+
+    @And("user clicks Scroll to top button")
+    public void userClicksScrollToTopButton() {
+        object.clickScrollToTop();
+    }
+
+    @Then("user should move to the top")
+    public void userShouldMoveToTheTop() {
+        assertTrue(object.isMainBunnerTitleVisible());
     }
 }
