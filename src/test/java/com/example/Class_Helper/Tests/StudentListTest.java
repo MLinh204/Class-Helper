@@ -1,110 +1,90 @@
 package com.example.Class_Helper.Tests;
 
-import com.example.Class_Helper.config.ConfigProperties;
+import com.example.Class_Helper.Hooks.StudentListHooks;
+import com.example.Class_Helper.config.ConfigElement;
+import com.example.Class_Helper.config.ConfigURL;
+import com.example.Class_Helper.pageObject.PageFactory;
 import com.example.Class_Helper.pageObject.StudentListObject;
 import com.example.Class_Helper.function.MainFunction;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.Given;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import java.time.Duration;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StudentListTest {
     private WebDriver driver;
     private WebDriverWait wait;
-    private StudentListObject object;
+    private PageFactory pages;
     private MainFunction function;
-    private Actions actions;
 
-    @BeforeClass
-    public void setup(){
-        WebDriverManager.firefoxdriver().setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        driver = new ChromeDriver();
-        object = new StudentListObject(driver);
+    @Given("the browser is opened")
+    public void theBrowserIsOpen() {
+        driver = StudentListHooks.getDriver();
+        pages = new PageFactory(driver);
         function = new MainFunction(driver);
-        actions = new Actions(driver);
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+    }
+
+    @And("the user is on the Student List page")
+    public void theUserIsOnTheStudentListPage() {
+        driver.get(ConfigURL.STUDENT_LIST_URL);
         driver.manage().window().maximize();
     }
-    @AfterClass
-    public void tearDown(){
-        if (driver!=null){
-            driver.quit();
-        }
+
+    @When("the user looks at the student list page")
+    public void theUserLooksAtTheStudentListPage() {
+        assertTrue(pages.studentList().getTitleBunner().isDisplayed());
     }
 
-    @Test
-    public void checkTitle() {
-        driver.get(ConfigProperties.STUDENT_LIST_URL);
-        function.waitLoadingElement();
-        System.out.println("Title: " + driver.getTitle());
+    @Then("the title should be Student List")
+    public void theTitleShouldBeStudentList() {
         assertEquals("Student List", driver.getTitle());
     }
-    @Test
-    public void checkUI(){
-        driver.get(ConfigProperties.STUDENT_LIST_URL);
-        function.waitLoadingElement();
-        assertEquals("Student List", object.getH3().getText());
-        assertEquals(3, object.getListStudent().size());
+
+    @Then("the user should see the needed student list UI elements")
+    public void checkUIElements(){
+        assertTrue(pages.studentList().isStudentListElementDisplayed());
     }
-    @Test
-    public void checkStudentElement() throws InterruptedException {
-        driver.get(ConfigProperties.STUDENT_LIST_URL);
-        for (WebElement student : object.getListStudent()){
-            WebElement studentName = student.findElement(By.xpath(".//h4//a"));
-            WebElement profilePicture = student.findElement(By.xpath(".//img"));
-            WebElement studentPower = student.findElement(By.xpath(".//p"));
-            Thread.sleep(500);
-            assertTrue(studentName.isDisplayed(), "Student name should be displayed");
-            System.out.println("Student name: " + studentName.getText());
-            assertTrue(profilePicture.isDisplayed(), "profile picture should be displayed");
-            System.out.println("Profile tag: " + profilePicture.getTagName());
-            assertTrue(studentPower.isDisplayed(), "Power should be displayed");
-            System.out.println("Power: " + studentPower.getText());
-        }
+
+    @Then("the View buttons should display")
+    public void theViewButtonShouldDisplay() {
+        assertTrue(pages.studentList().isViewBtnDisplayed());
     }
-    @Test
-    public void checkDisplayOfViewBtn() throws InterruptedException {
-        driver.get(ConfigProperties.STUDENT_LIST_URL);
-        for (WebElement student : object.getListStudent()){
-            WebElement viewBtn = student.findElement(By.xpath(".//a[@class='button button-sm button-primary']"));
-            actions.moveToElement(viewBtn).perform();
-            Thread.sleep(1000);
-            assertTrue(viewBtn.isDisplayed(), "View button should be displayed");
-        }
+
+    @When("the user hovers on each student")
+    public void theUserHoversOnEachStudent() {
+        System.out.println("Start hovering each student...");
     }
-    @Test
-    public void selectViewBtn() {
-        driver.get(ConfigProperties.STUDENT_LIST_URL);
-        WebElement viewBtn = object.getViewButton("Cat");
-        actions.moveToElement(viewBtn).perform();
-        wait.until(ExpectedConditions.visibilityOf(viewBtn));
-        function.forceClick(viewBtn);
-        wait.until(ExpectedConditions.invisibilityOf(viewBtn));
-        assertEquals("Home", driver.getTitle());
+
+    @When("user hovers on the student")
+    public void userHoversOnTheStudent() {
+        function.hoverOnElement(pages.studentList().getViewButton(ConfigElement.DEFINED_TEST_USER));
     }
-    @Test
-    public void selectStudentName(){
-        driver.get(ConfigProperties.STUDENT_LIST_URL);
-        WebElement studentName = object.getStudentName("Cat");
-        actions.moveToElement(studentName).perform();
-        wait.until(ExpectedConditions.visibilityOf(studentName));
-        function.forceClick(studentName);
-        wait.until(ExpectedConditions.invisibilityOf(studentName));
-        assertEquals("Home", driver.getTitle());
+
+    @Then("View button should be displayed")
+    public void viewButtonShouldBeDisplayed() {
+        assertTrue(pages.studentList().getViewButton(ConfigElement.DEFINED_TEST_USER).isDisplayed());
+    }
+
+    @And("user clicks View button")
+    public void userClicksViewButton() {
+        function.forceClick(pages.studentList().getViewButton(ConfigElement.DEFINED_TEST_USER));
+    }
+
+    @Then("user should be redirected to student detail page")
+    public void userShouldBeRedirectedToStudentDetailPage() {
+        assertTrue(pages.studentDetail().getInforCard().isDisplayed());
+    }
+
+    @When("user clicks the name of the student")
+    public void userClicksTheNameOfTheStudent() {
+        pages.studentList().getStudentName(ConfigElement.DEFINED_TEST_USER).click();
     }
 }
+

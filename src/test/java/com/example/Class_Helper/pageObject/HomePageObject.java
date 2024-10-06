@@ -14,12 +14,10 @@ public class HomePageObject {
     private WebDriver driver;
     private WebDriverWait wait;
     private MainFunction function;
-    private SoftAssert softAssert;
     public HomePageObject(WebDriver driver){
         this.driver = driver;
         this.function = new MainFunction(driver);
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        this.softAssert = new SoftAssert();
         PageFactory.initElements(driver, this);
     }
     @FindBy(xpath = "//img[@class='brand-logo-light']")

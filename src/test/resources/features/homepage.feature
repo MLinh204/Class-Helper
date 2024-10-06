@@ -1,3 +1,4 @@
+@Homepage
 Feature: User use case on Class Helper website
 
   Background:
