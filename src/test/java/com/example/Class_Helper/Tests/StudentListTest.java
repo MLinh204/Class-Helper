@@ -4,7 +4,6 @@ import com.example.Class_Helper.Hooks.StudentListHooks;
 import com.example.Class_Helper.config.ConfigElement;
 import com.example.Class_Helper.config.ConfigURL;
 import com.example.Class_Helper.pageObject.PageFactory;
-import com.example.Class_Helper.pageObject.StudentListObject;
 import com.example.Class_Helper.function.MainFunction;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;

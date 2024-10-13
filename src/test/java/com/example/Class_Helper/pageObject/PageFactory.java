@@ -7,6 +7,7 @@ public class PageFactory {
     private HomePageObject homePage;
     private StudentListObject studentList;
     private StudentDetailObject studentDetail;
+    private AddStudentObject addStudentObject;
 
     public PageFactory(WebDriver driver) {
         this.driver = driver;
@@ -31,5 +32,12 @@ public class PageFactory {
             studentDetail = new StudentDetailObject(driver);
         }
         return studentDetail;
+    }
+
+    public AddStudentObject addStudentObject(){
+        if (addStudentObject == null){
+            addStudentObject = new AddStudentObject(driver);
+        }
+        return addStudentObject;
     }
 }
