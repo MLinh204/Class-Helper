@@ -83,4 +83,13 @@ public class AddStudentTest {
     public void newStudentShouldBeCreated() {
         assertTrue(pages.studentList().isNewStudentCreated(ConfigElement.TEST_USER, ConfigElement.POWER_TYPE));
     }
+
+    @When("user does not fill in Name")
+    public void userDoesNotFillInName() {
+        // do nothing
+    }
+
+    @Then("error message should be displayed: {string}")
+    public void errorMessageShouldBeDisplayed(String arg0) {
+    }
 }

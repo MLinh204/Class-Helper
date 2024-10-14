@@ -122,12 +122,9 @@ public class StudentController {
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<?> updateStudent(@PathVariable Long id,
-                                           @ModelAttribute Student updatedStudent,
-                                           @RequestParam(value = "profilePicture", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<?> updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent, @RequestParam(value = "profilePicture", required = false) MultipartFile file) throws IOException {
         try {
             Student existingStudent = studentService.getStudentById(id);
-
             // Check if the name is being changed and if it's unique
             if (!existingStudent.getName().equals(updatedStudent.getName())) {
                 if (studentService.isStudentNameTaken(updatedStudent.getName())) {
@@ -138,17 +135,17 @@ public class StudentController {
                 }
                 existingStudent.setName(updatedStudent.getName());
             }
-
             existingStudent.setPowerType(updatedStudent.getPowerType());
             existingStudent.setLevel(updatedStudent.getLevel());
-
             if (file != null && !file.isEmpty()) {
                 String newFileName = handleFileUpload(file, existingStudent.getProfilePictureName());
                 existingStudent.setProfilePictureName(newFileName);
             }
-
             Student updated = studentService.updateStudent(existingStudent);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "id", updated.getId()
+            ));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of(
                     "success", false,
