@@ -62,6 +62,11 @@
         <div class="container">
     <div class="Wrapper">
         <div class="form-container">
+
+            <div th:if="${error}" class="error-message" style="color: red; margin-bottom: 15px;">
+                <p th:text="${error}"></p>
+            </div>
+
             <form th:action="@{/students/create}" th:object="${student}" method="post" enctype="multipart/form-data">
                 <div class="input">
                     <input type="text" th:field="*{name}" placeholder="Name*" required>

@@ -1,6 +1,7 @@
 package com.example.Class_Helper.pageObject;
 
 import com.example.Class_Helper.Hooks.StudentListHooks;
+import com.example.Class_Helper.config.ConfigElement;
 import com.example.Class_Helper.function.MainFunction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -97,6 +98,18 @@ public class StudentListObject {
             }
         }
         return true;
+    }
+
+    public boolean isNewStudentCreated(String studentName, String powerType){
+        try{
+            WebElement name = wait.until(ExpectedConditions.visibilityOf(getStudentName(studentName)));
+            WebElement power = wait.until(ExpectedConditions.visibilityOf(getStudentPower(studentName)));
+            boolean isNameCorrect = name.getText().equalsIgnoreCase(studentName);
+            boolean isPowerTypeCorrect = power.getText().equalsIgnoreCase(powerType);
+            return isNameCorrect && isPowerTypeCorrect;
+        } catch (NoSuchElementException | TimeoutException e){
+            return false;
+        }
     }
 
 

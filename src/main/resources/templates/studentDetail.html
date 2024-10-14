@@ -141,6 +141,7 @@
             <div id="editStudentModal" class="modal">
               <div class="modal-content">
                 <h2>Edit Student</h2>
+                <div id="editErrorMessage" class="alert alert-danger" style="display: none;"></div>
                 <form th:action="@{/students/update/{id}(id=${student.id})}" th:object="${student}" method="post" enctype="multipart/form-data">
                   <div class="input">
                     <input type="text" style="color: black;" th:field="*{name}" placeholder="Name*" required>

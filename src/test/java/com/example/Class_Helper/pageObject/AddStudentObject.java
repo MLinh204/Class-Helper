@@ -21,6 +21,8 @@ public class AddStudentObject {
     private WebElement submitBtn;
     @FindBy(xpath = "(//a[@class='button button-primary button-sm'])[2]")
     private WebElement returnToStudentListBtn;
+    @FindBy(xpath = "//input[@type='file']")
+    private WebElement chooseFileBtn;
     public AddStudentObject(WebDriver driver){
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -30,7 +32,7 @@ public class AddStudentObject {
         String xpath = String.format("//div[@class='form-container']//input[@name='%s']", name);
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
     }
-    public void selectOption(String inputName, String option){
+    public void selectOption(String option){
         WebElement nameElement = powerOption;
         Select select = new Select(nameElement);
         select.selectByVisibleText(option);
@@ -46,5 +48,21 @@ public class AddStudentObject {
             return false;
         }
         return true;
+    }
+
+    public WebElement getReturnToStudentListBtn() {
+        return returnToStudentListBtn;
+    }
+
+    public WebElement getSubmitBtn() {
+        return submitBtn;
+    }
+
+    public WebElement getPowerOption() {
+        return powerOption;
+    }
+
+    public WebElement getChooseFileBtn() {
+        return chooseFileBtn;
     }
 }
