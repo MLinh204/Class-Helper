@@ -19,3 +19,4 @@
       And user chooses power type
       And user clicks Save button
       Then new student should be created
+

@@ -5,26 +5,22 @@ import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class HomepageHooks {
     private static WebDriver driver;
 
     @Before("@Homepage")
-    public void setUp(Scenario scenario) {
-        if (driver == null) {
-            driver = new ChromeDriver();
-        }
+    public void setUp() {
+        SharedWebDriver.getDriver();
     }
 
     @After("@Homepage")
-    public void tearDown(Scenario scenario) {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
+    public void tearDown() {
+        SharedWebDriver.quitDriver();
     }
 
     public static WebDriver getDriver() {
-        return driver;
+        return SharedWebDriver.getDriver();
     }
 }

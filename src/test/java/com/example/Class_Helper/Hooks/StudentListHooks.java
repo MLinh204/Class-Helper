@@ -11,23 +11,15 @@ public class StudentListHooks {
 
     @Before("@StudentList")
     public void setUp(Scenario scenario) {
-        if (driver == null) {
-            driver = new ChromeDriver();
-        }
+        SharedWebDriver.getDriver();
     }
 
     @After("@StudentList")
     public void tearDown(Scenario scenario) {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
+        SharedWebDriver.quitDriver();
     }
 
     public static WebDriver getDriver() {
-        if (driver == null) {
-            driver = new ChromeDriver();
-        }
-        return driver;
+        return SharedWebDriver.getDriver();
     }
 }
