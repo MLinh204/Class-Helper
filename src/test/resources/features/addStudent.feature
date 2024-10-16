@@ -20,3 +20,9 @@
       And user clicks Save button
       Then new student should be created
 
+    Scenario: No inputting name
+      When user does not fill in Name
+      And user chooses Profile picture
+      And user chooses power type
+      And user clicks Save button
+      Then error message should be displayed: "Name is required."
