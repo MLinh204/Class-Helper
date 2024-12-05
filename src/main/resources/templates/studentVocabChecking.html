@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Student Vocab Checking</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <h1>Student: <span th:text="${student.name}"></span></h1>  <!-- Replace with actual student attribute -->
+  <p>Select a vocab group:</p>
+  <ul class="list-group">
+    <li th:each="group : ${vocabGroups}" class="list-group-item">
+      <a th:href="@{/{studentId}/{vocabGroupId}(studentId=${student.id}, vocabGroupId=${group.id})}" th:text="${group.vocabGroupName}"></a> <!-- Replace with actual group attribute -->
+    </li>
+  </ul>
+</div>
+</body>
+</html>

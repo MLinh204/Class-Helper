@@ -112,7 +112,6 @@ public class StudentListObject {
         }
     }
 
-
     public List<WebElement> getListStudent() {
         return listStudent;
     }

@@ -1,0 +1,72 @@
+body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5; /* Light gray background */
+            color: #333; /* Dark gray text */
+        }
+
+        h1 {
+            color: #000;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffffff; /* White background */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .list-group-item {
+            background-color: #e9ecef; /* Light gray list item */
+            color: #333;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .list-group-item:hover {
+            background-color: #d6d8db; /* Darker gray on hover */
+            transform: scale(1.02); /* Subtle zoom effect */
+        }
+
+        .btn-primary {
+            background-color: #6c757d; /* Dark gray button */
+            border: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #495057; /* Slightly darker gray */
+            transform: scale(1.05); /* Subtle zoom */
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        /* Modal styles */
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header, .modal-footer {
+            background-color: #f8f9fa; /* Very light gray for modal header and footer */
+        }
+
+        .modal-title {
+            color: #000; /* Black title */
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }

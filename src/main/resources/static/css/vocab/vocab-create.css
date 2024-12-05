@@ -1,0 +1,54 @@
+body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5; /* Light gray background for contrast */
+      color: #333; /* Dark gray text for readability */
+    }
+
+    h1 {
+      color: #000;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: #e9ecef; /* Subtle gray for striped rows */
+    }
+
+    .btn-primary {
+      background-color: #6c757d; /* Dark gray button */
+      border: none;
+      transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    }
+
+    .btn-primary:hover {
+      background-color: #495057; /* Slightly darker gray */
+      transform: scale(1.05); /* Subtle zoom on hover */
+    }
+
+    .table th, .table td {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .container {
+      margin-top: 50px;
+      padding: 20px;
+      background-color: #ffffff; /* White background for the content area */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      border-radius: 8px; /* Rounded corners */
+    }
+
+    /* Add smooth fade-in animation for the container */
+    .container {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }

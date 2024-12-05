@@ -1,7 +1,9 @@
 package com.example.Class_Helper.controller;
 
+import com.example.Class_Helper.MultipartFileByteArrayEditor;
 import com.example.Class_Helper.model.Student;
 import com.example.Class_Helper.service.GameService;
+import com.example.Class_Helper.service.PhotoService;
 import com.example.Class_Helper.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,10 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 @Controller
@@ -32,6 +33,8 @@ public class StudentController {
     private StudentService studentService;
     @Value("${file.upload-dir}")
     private String uploadDir;
+    @Autowired
+    private PhotoService photoService;
 
     private static final Logger logger = LoggerFactory.getLogger(GameService.class);
 
@@ -48,15 +51,20 @@ public class StudentController {
     }
 
     @GetMapping("/all")
-    @ResponseBody
-    public List<Student> getAllStudents() {
-        return studentService.getALlStudent();
+    public String getAllStudents(Model model) {
+        List<Student> students = studentService.getALlStudent();
+        model.addAttribute("students", students);
+        return "studentList";
     }
 
-    @GetMapping("/{id}/details")
-    @ResponseBody
-    public Student getStudentDetails(@PathVariable Long id) {
-        return studentService.getStudentById(id);
+    @GetMapping("/details/{id}")
+    public String getStudentDetails(@PathVariable Long id, Model model) {
+        Student student = studentService.getStudentById(id);
+        String base64Photo =student.getPhoto() != null ?
+                Base64.getEncoder().encodeToString(student.getPhoto()) : null;
+        model.addAttribute("student", student);
+        model.addAttribute("base64Photo", base64Photo);
+        return "studentDetail";
     }
 
     @GetMapping("/create")
@@ -65,36 +73,20 @@ public class StudentController {
         return "createStudentForm";
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(byte[].class, new MultipartFileByteArrayEditor());
+    }
     @PostMapping("/create")
     public String createStudent(@ModelAttribute Student student,
                                 Model model,
-                                @RequestParam("profilePicture") MultipartFile file)
-            throws IOException {
-        if (!file.isEmpty()) {
-            // Generate a unique file name
-            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            String newFileName = UUID.randomUUID().toString() + fileExtension;
-
-            // Create the full path
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(newFileName);
-
-            // Copy the file, replacing existing files
-            try {
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new IOException("Could not store file " + newFileName + ". Please try again!", e);
-            }
-
-            student.setProfilePictureName(newFileName);
-        }
+                                @RequestParam(name = "photo", required = false) MultipartFile photo)
+             {
         try {
             studentService.createStudent(student);
+            if (photo != null && !photo.isEmpty()) {
+                photoService.saveStudentPhoto(student, photo);
+            }
             return "redirect:/students";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
@@ -122,62 +114,22 @@ public class StudentController {
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<?> updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent, @RequestParam(value = "profilePicture", required = false) MultipartFile file) throws IOException {
-        try {
-            Student existingStudent = studentService.getStudentById(id);
-            // Check if the name is being changed and if it's unique
-            if (!existingStudent.getName().equals(updatedStudent.getName())) {
-                if (studentService.isStudentNameTaken(updatedStudent.getName())) {
-                    return ResponseEntity.badRequest().body(Map.of(
-                            "success", false,
-                            "message", "A student with this name already exists."
-                    ));
-                }
-                existingStudent.setName(updatedStudent.getName());
-            }
+    public String updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent, BindingResult result, @RequestParam(value = "photo") MultipartFile photo) {
+        if(result.hasErrors()){
+            return "studentList";
+        }
+        Student existingStudent = studentService.getStudentById(id);
+        if (existingStudent != null) {
+            existingStudent.setName(updatedStudent.getName());
             existingStudent.setPowerType(updatedStudent.getPowerType());
-            existingStudent.setLevel(updatedStudent.getLevel());
-            if (file != null && !file.isEmpty()) {
-                String newFileName = handleFileUpload(file, existingStudent.getProfilePictureName());
-                existingStudent.setProfilePictureName(newFileName);
-            }
-            Student updated = studentService.updateStudent(existingStudent);
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "id", updated.getId()
-            ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
+
+            studentService.updateStudent(existingStudent);
+            photoService.saveStudentPhoto(existingStudent, photo);
         }
+        return "redirect:/students/" + id;
     }
 
-    private String handleFileUpload(MultipartFile file, String oldFileName) throws IOException {
-        String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String newFileName = UUID.randomUUID().toString() + fileExtension;
 
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-        Path filePath = uploadPath.resolve(newFileName);
-
-        try {
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new IOException("Could not store file " + newFileName + ". Please try again!", e);
-        }
-
-        if (oldFileName != null) {
-            Path oldFilePath = uploadPath.resolve(oldFileName);
-            Files.deleteIfExists(oldFilePath);
-        }
-
-        return newFileName;
-    }
 
     @GetMapping("/random")
     public String selectStudentForm(Model model) {
