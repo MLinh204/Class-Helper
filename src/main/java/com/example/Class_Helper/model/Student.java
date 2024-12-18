@@ -11,6 +11,7 @@ public class Student {
     private String powerType;
 
     @Column(columnDefinition = "LONGBLOB")
+    @Basic(fetch = FetchType.EAGER)
     private byte[] photo = new byte[0];
     private String symbol;
     @Column(nullable = false)

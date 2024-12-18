@@ -1,5 +1,6 @@
 package com.example.Class_Helper.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 @Entity
@@ -11,6 +12,7 @@ public class VocabGroup {
     private String vocabGroupName;
 
     @OneToMany(mappedBy = "vocabGroup", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Vocab> vocabs;
 
     public Long getId() {

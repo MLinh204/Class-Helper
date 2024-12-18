@@ -1,0 +1,194 @@
+body {
+      background-color: #f1f1f1; /* Light gray background */
+      font-family: Arial, sans-serif;
+      color: #333;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin-top: 50px;
+    }
+
+    .student-card {
+  width: 70%; /* Slightly increase width for better balance */
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.student-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.student-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  margin: 20px auto;
+  border: 4px solid #007bff; /* Add a subtle border */
+  object-fit: cover; /* Ensure proper image scaling */
+}
+
+    .student-card .text-center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px; /* adjust height if needed */
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+.student-info {
+  font-family: 'Roboto', sans-serif; /* Modern font */
+  font-size: 1rem;
+  color: #444; /* Neutral text color */
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px 25px; /* Comfortable spacing inside */
+  background-color: #f9f9f9; /* Slightly off-white background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  margin-top: 20px;
+}
+
+.student-info h3 {
+  font-size: 1.5rem;
+  color: #4CAF50; /* Accent color for headings */
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #4CAF50;
+  display: inline-block;
+}
+
+.student-info p {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd; /* Dividers between items */
+  gap: 7px;
+}
+
+.student-info p:last-child {
+  border-bottom: none; /* No divider for the last item */
+}
+
+.student-info span {
+  font-weight: 600;
+}
+
+.student-info .icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.student-info img {
+  max-height: 24px;
+  vertical-align: middle;
+}
+
+.add-link img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.add-link img:hover {
+  transform: scale(1.2); /* Slight zoom effect */
+}
+
+    .modal-header {
+      background-color: #333; /* Dark gray modal header */
+      color: white;
+    }
+
+    .modal-title {
+      font-weight: bold;
+    }
+
+    .modal-body input,
+    .modal-body textarea {
+      margin-bottom: 10px;
+    }
+
+    .modal-body textarea {
+      resize: none;
+    }
+
+    .modal-content {
+      border-radius: 10px;
+      background-color: #fff;
+    }
+
+    .btn-primary,
+    .btn-success,
+    .btn-danger,
+    .btn-warning {
+      font-weight: bold;
+    }
+
+    .modal-footer .btn {
+      font-weight: bold;
+    }
+
+    /* Light gray button colors */
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #004085;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+
+    .btn-warning {
+      background-color: #ffc107;
+      border-color: #ffc107;
+    }
+
+    .btn-warning:hover {
+      background-color: #e0a800;
+      border-color: #d39e00;
+    }

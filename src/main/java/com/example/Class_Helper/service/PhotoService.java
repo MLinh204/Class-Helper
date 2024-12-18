@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 
 @Service
 public class PhotoService {
-    private final String UPLOAD_DIR = "src/main/resources/static/photos/";
+    private final String UPLOAD_DIR = "D:/uploads";
     @Autowired
     private StudentRepository studentRepository;
 
@@ -24,8 +24,8 @@ public class PhotoService {
                 student.setPhoto(bytes);
                 studentRepository.save(student);
 
-                String fileName = student.getName() + "_" + photo.getOriginalFilename();
-                Path path = Paths.get(UPLOAD_DIR + fileName);
+                String fileName = student.getName() + "_" + System.currentTimeMillis() + "_" + photo.getOriginalFilename();
+                Path path = Paths.get(UPLOAD_DIR + "/" + fileName);
                 Files.write(path, bytes);
             } catch (IOException e) {
                 e.printStackTrace();

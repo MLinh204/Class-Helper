@@ -4,18 +4,26 @@ const randomList = document.getElementById('randomList');
 let animationId;
 let randomStudents = [];
 
-document.getElementById('addRandomStudent').addEventListener('click', function() {
-    fetch('/students/all')
-        .then(response => response.json())
-        .then(students => {
+document.getElementById('addRandomStudent').addEventListener('click', function () {
+    fetch('/students/api/all')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const { students, base64Photos } = data;
             const studentList = document.getElementById('studentList');
-            studentList.innerHTML = '';
-            students.forEach(student => {
+            students.forEach((student, index) => {
+               const photoSrc = student.photo ? `data:image/jpeg;base64,${student.photo}` :
+                                       (student.base64Photo ? `data:image/jpeg;base64,${student.base64Photo}` : '/uploads/default-profile.jpg');
                 const studentElement = document.createElement('div');
                 studentElement.className = 'col-md-4 mb-3';
+
                 studentElement.innerHTML = `
                     <div class="card">
-                        <img src="/uploads/${student.profilePictureName}" class="card-img-top" alt="${student.name}" style="height:300px;" >
+                        <img src="${photoSrc}" class="card-img-top" alt="${student.name}" style="height:300px;">
                         <div class="card-body">
                             <h5 class="card-title">${student.name}</h5>
                             <button class="btn btn-primary btn-sm add-student" data-id="${student.id}">Add</button>
@@ -25,15 +33,19 @@ document.getElementById('addRandomStudent').addEventListener('click', function()
                 studentList.appendChild(studentElement);
             });
             new bootstrap.Modal(document.getElementById('addStudentModal')).show();
-        });
+        })
+        .catch(error => console.error('Error fetching students:', error));
 });
 
 document.getElementById('studentList').addEventListener('click', function(e) {
     if (e.target.classList.contains('add-student')) {
         const studentId = e.target.getAttribute('data-id');
-        fetch(`/students/${studentId}/details`)
+        fetch(`/students/api/details/${studentId}`)
             .then(response => response.json())
-            .then(student => {
+            .then(data => {
+                const student = data.student;
+                const base64Photo = data.base64Photo;
+                student.base64Photo = base64Photo;
                 if (!randomStudents.some(s => s.id === student.id)) {
                     randomStudents.push(student);
                     console.log('Student added:', student);
@@ -44,17 +56,10 @@ document.getElementById('studentList').addEventListener('click', function(e) {
 });
 
 randomList.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-student')) {
+    if (e.target && e.target.classList.contains('remove-student')) {
         const studentId = e.target.getAttribute('data-id');
         console.log('Attempting to remove student with ID:', studentId);
-        console.log('Student IDs before removal:', randomStudents.map(s => s.id));
-
-        randomStudents = randomStudents.filter(student => {
-            console.log(`Comparing student.id (${student.id}) !== studentId (${studentId}): ${student.id !== studentId}`);
-            return student.id !== parseInt(studentId);
-        });
-        console.log('Student IDs after removal:', randomStudents.map(s => s.id));
-        console.log('Students after removal:', randomStudents);
+        randomStudents = randomStudents.filter(student => student.id !== parseInt(studentId));
         updateRandomList();
     }
 });
@@ -64,17 +69,19 @@ function updateRandomList() {
     randomList.innerHTML = '';
     slidingImages.innerHTML = '';
     randomStudents.forEach(student => {
+        const base64Photo = student.base64Photo; // Assuming base64Photo is part of each student object
+        const photoSrc = base64Photo ? `data:image/jpeg;base64,${base64Photo}` : '/uploads/default-profile.jpg'; // Fallback to a default image
         const studentElement = document.createElement('div');
         studentElement.className = 'd-inline-block m-2 position-relative';
         studentElement.innerHTML = `
-            <img src="/uploads/${student.profilePictureName}" class="student-image" alt="${student.name}">
-            <p>${student.name}</p>
-            <button class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-student" data-id="${student.id}">-</button>
+            <img src="${photoSrc}" class="student-image" alt="${student.name}">
+                        <p>${student.name}</p>
+                        <button class="btn btn-danger btn-sm position-absolute top-0 end-0 remove-student" data-id="${student.id}">-</button>
         `;
         randomList.appendChild(studentElement);
 
         const imageElement = document.createElement('img');
-        imageElement.src = `/uploads/${student.profilePictureName}`;
+        imageElement.src = photoSrc;
         imageElement.className = 'student-image';
         imageElement.setAttribute('data-id', student.id);
         imageElement.alt = student.name;
@@ -118,7 +125,11 @@ document.getElementById('getRandomStudent').addEventListener('click', function()
         slidingImages.style.transition = 'transform 0.5s ease';
         slidingImages.style.transform = `translateX(-${scrollPosition}px)`;
 
-        document.getElementById('selectedStudentImage').src = `/uploads/${selectedStudent.profilePictureName}`;
+        if (selectedStudent.base64Photo) {
+            document.getElementById('selectedStudentImage').src = `data:image/jpeg;base64,${selectedStudent.base64Photo}`;
+        } else {
+            document.getElementById('selectedStudentImage').src = `/uploads/${selectedStudent.profilePictureName}`;
+        }
         document.getElementById('selectedStudentName').textContent = selectedStudent.name;
         new bootstrap.Modal(document.getElementById('resultModal')).show();
 

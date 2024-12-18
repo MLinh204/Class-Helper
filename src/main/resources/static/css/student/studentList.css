@@ -1,0 +1,53 @@
+body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+    }
+    h3 {
+        color: #555;
+    }
+    .section {
+        padding: 2rem 0;
+    }
+  .student-img {
+    width: 150px; /* Set a fixed width */
+    height: 150px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image fills the container while maintaining aspect ratio */
+    border-radius: 8px; /* Optional: Rounded corners */
+    transition: transform 0.3s ease-in-out;
+    }
+
+.student-img:hover {
+    transform: scale(1.05);
+}
+
+    .button-primary {
+        background-color: #cbc9c9;
+        border: none;
+    }
+    .button-primary:hover {
+        background-color: #5093ce;
+    }
+    .box-causes {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+    .box-causes:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+    footer {
+        background-color: #333;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+    footer a {
+        color: #aaa;
+    }
+    footer a:hover {
+        color: white;
+    }

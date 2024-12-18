@@ -23,11 +23,22 @@
     <div th:if="${success}" class="alert alert-success mt-3 text-center" th:text="${success}"></div>
 
     <!-- List of existing vocabs -->
-    <ol class="list-group mt-4">
-        <li th:each="vocab : ${vocabs}" class="list-group-item">
-            <strong th:text="${vocab.word}"></strong> - <em th:text="${vocab.wordType}"></em> <!-- Display word and its type -->
-        </li>
-    </ol>
+    <table class="table table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Order</th>
+            <th>Word</th>
+            <th>WordType</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="vocab, iterStat : ${vocabs}">
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="${vocab.word}"></td>
+            <td th:text="${vocab.wordType}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <!-- Modal for Adding New Vocabulary -->
