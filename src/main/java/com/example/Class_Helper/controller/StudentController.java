@@ -1,28 +1,25 @@
 package com.example.Class_Helper.controller;
 
+import com.example.Class_Helper.MultipartFileByteArrayEditor;
 import com.example.Class_Helper.model.Student;
 import com.example.Class_Helper.service.GameService;
+import com.example.Class_Helper.service.PhotoService;
 import com.example.Class_Helper.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -32,31 +29,70 @@ public class StudentController {
     private StudentService studentService;
     @Value("${file.upload-dir}")
     private String uploadDir;
+    @Autowired
+    private PhotoService photoService;
 
     private static final Logger logger = LoggerFactory.getLogger(GameService.class);
 
     @GetMapping
     public String listStudents(Model model) {
-        model.addAttribute("students", studentService.getALlStudent());
+        List<Student> students = studentService.getALlStudent();
+        List<String> base64Photos = new ArrayList<>();
+        for (Student student : students) {
+            base64Photos.add(student.getPhoto()!= null? Base64.getEncoder().encodeToString(student.getPhoto()) : null);
+        }
+        model.addAttribute("base64Photos", base64Photos);
+        model.addAttribute("students", students);
         return "studentList";
     }
 
-    @GetMapping("/{id}")
-    public String studentDetail(@PathVariable Long id, Model model) {
-        model.addAttribute("student", studentService.getStudentById(id));
-        return "studentDetail";
+    @GetMapping("/api/all")
+    public ResponseEntity<Map<String, Object>> getStudents() {
+        List<Student> students = studentService.getALlStudent();
+        List<String> base64Photos = new ArrayList<>();
+        for (Student student : students) {
+            base64Photos.add(student.getPhoto() != null ? Base64.getEncoder().encodeToString(student.getPhoto()) : null);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("students", students);
+        response.put("base64Photos", base64Photos);
+
+        return ResponseEntity.ok(response); // Return 200 OK with the JSON body
     }
 
     @GetMapping("/all")
-    @ResponseBody
-    public List<Student> getAllStudents() {
-        return studentService.getALlStudent();
+    public String getAllStudents(Model model) {
+        List<Student> students = studentService.getALlStudent();
+        model.addAttribute("students", students);
+        return "studentList";
     }
 
-    @GetMapping("/{id}/details")
-    @ResponseBody
-    public Student getStudentDetails(@PathVariable Long id) {
-        return studentService.getStudentById(id);
+    @GetMapping("/details/{id}")
+    public String getStudentDetails(@PathVariable Long id, Model model) {
+        Student student = studentService.getStudentById(id);
+        String base64Photo =student.getPhoto() != null ?
+                Base64.getEncoder().encodeToString(student.getPhoto()) : null;
+        model.addAttribute("student", student);
+        model.addAttribute("base64Photo", base64Photo);
+        return "studentDetail";
+    }
+    @GetMapping("/api/details/{id}")
+    public ResponseEntity<Map<String, Object>> getStudentDetails(@PathVariable Long id){
+        try {
+            Student student = studentService.getStudentById(id);
+            if (student == null){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Student not found"));
+            }
+            String base64Photo = student.getPhoto() != null ?
+                    Base64.getEncoder().encodeToString(student.getPhoto()) : null;
+            Map<String, Object> response = new HashMap<>();
+            response.put("student", student);
+            response.put("base64Photo", base64Photo);
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/create")
@@ -65,41 +101,25 @@ public class StudentController {
         return "createStudentForm";
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(byte[].class, new MultipartFileByteArrayEditor());
+    }
     @PostMapping("/create")
     public String createStudent(@ModelAttribute Student student,
                                 Model model,
-                                @RequestParam("profilePicture") MultipartFile file)
-            throws IOException {
-        if (!file.isEmpty()) {
-            // Generate a unique file name
-            String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            String newFileName = UUID.randomUUID().toString() + fileExtension;
-
-            // Create the full path
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(newFileName);
-
-            // Copy the file, replacing existing files
-            try {
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new IOException("Could not store file " + newFileName + ". Please try again!", e);
-            }
-
-            student.setProfilePictureName(newFileName);
-        }
+                                @RequestParam(name = "photo", required = false) MultipartFile photo)
+             {
         try {
             studentService.createStudent(student);
+            if (photo != null && !photo.isEmpty()) {
+                photoService.saveStudentPhoto(student, photo);
+            }
             return "redirect:/students";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("student", student);
-            return "createStudentForm";
+            return "studentDetail";
         }
     }
 
@@ -112,76 +132,42 @@ public class StudentController {
     @PostMapping("/modifyHeart/{id}")
     public String modifyHeart(@PathVariable Long id, @RequestParam double heartChange, @RequestParam String description) {
         studentService.modifyHeart(id, heartChange, description);
-        return "redirect:/students/" + id;
+        return "redirect:/students/details/" + id;
     }
 
     @PostMapping("/addPoints/{id}")
     public String addPoint(@PathVariable Long id, @RequestParam int pointToAdd, @RequestParam String description) {
         studentService.addPoint(id, pointToAdd, description);
-        return "redirect:/students/" + id;
+        return "redirect:/students/details/" + id;
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<?> updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent, @RequestParam(value = "profilePicture", required = false) MultipartFile file) throws IOException {
-        try {
-            Student existingStudent = studentService.getStudentById(id);
-            // Check if the name is being changed and if it's unique
-            if (!existingStudent.getName().equals(updatedStudent.getName())) {
-                if (studentService.isStudentNameTaken(updatedStudent.getName())) {
-                    return ResponseEntity.badRequest().body(Map.of(
-                            "success", false,
-                            "message", "A student with this name already exists."
-                    ));
-                }
-                existingStudent.setName(updatedStudent.getName());
-            }
+    public String updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent, BindingResult result, @RequestParam(value = "photo") MultipartFile photo, Model model) {
+        if(result.hasErrors()){
+            return "studentList";
+        }
+        Student existingStudent = studentService.getStudentById(id);
+        if (existingStudent != null) {
+            existingStudent.setName(updatedStudent.getName());
             existingStudent.setPowerType(updatedStudent.getPowerType());
-            existingStudent.setLevel(updatedStudent.getLevel());
-            if (file != null && !file.isEmpty()) {
-                String newFileName = handleFileUpload(file, existingStudent.getProfilePictureName());
-                existingStudent.setProfilePictureName(newFileName);
-            }
-            Student updated = studentService.updateStudent(existingStudent);
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "id", updated.getId()
-            ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
+
+            studentService.updateStudent(existingStudent);
+            photoService.saveStudentPhoto(existingStudent, photo);
         }
+        model.addAttribute("student", existingStudent);
+        model.addAttribute("base64Photo", photo!= null? Base64.getEncoder().encodeToString(existingStudent.getPhoto()) : null);
+        return "studentDetail";
     }
 
-    private String handleFileUpload(MultipartFile file, String oldFileName) throws IOException {
-        String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String newFileName = UUID.randomUUID().toString() + fileExtension;
-
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-        Path filePath = uploadPath.resolve(newFileName);
-
-        try {
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            throw new IOException("Could not store file " + newFileName + ". Please try again!", e);
-        }
-
-        if (oldFileName != null) {
-            Path oldFilePath = uploadPath.resolve(oldFileName);
-            Files.deleteIfExists(oldFilePath);
-        }
-
-        return newFileName;
-    }
 
     @GetMapping("/random")
     public String selectStudentForm(Model model) {
         List<Student> students = studentService.getALlStudent();
+        List<String> base64Photos = students.stream()
+                .map(student -> student.getPhoto() != null ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(student.getPhoto()) : null)
+                .collect(Collectors.toList());
+
+        model.addAttribute("base64Photos", base64Photos);
         model.addAttribute("students", students);
         return "selectRandomForm";
     }
@@ -195,6 +181,6 @@ public class StudentController {
     @PostMapping("/modifyCrystal/{id}")
     public String modifyCrystal(@PathVariable Long id, @RequestParam int newCrystal, @RequestParam String description) {
         studentService.modifyCrystal(id, newCrystal, description);
-        return "redirect:/students/" + id;
+        return "redirect:/students/details/" + id;
     }
 }

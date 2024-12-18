@@ -1,126 +1,66 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Add Student</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" th:href="@{/images/logo.png}" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:300,300i,400,500,600,700,800,900,900i%7CRoboto:400%7CRubik:100,400,700">
-    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
-    <link rel="stylesheet" th:href="@{/css/fonts.css}">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/fragment.css}">
-
-    <style>.ie-panel{display: none;background: #212121;padding: 10px 0;box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3);clear: both;text-align:center;position: relative;z-index: 1;} html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {display: block;}</style>
+    <title>Create Student - Vocab Learning Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/student/createStudentForm.css}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img th:src="@{/images/ie8-panel/warning_bar_0000_us.jpg}" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
-<div class="preloader">
-    <div class="preloader-body">
-        <div class="cssload-container">
-            <div class="cssload-speeding-wheel"></div>
-        </div>
-        <p>Loading...</p>
-    </div>
-</div>
-<div class="page">
-    <!-- Page Header-->
-    <header class="section page-header">
-        <!-- RD Navbar-->
-        <div class="rd-navbar-wrap">
-            <nav class="rd-navbar rd-navbar-classic" data-layout="rd-navbar-fixed" data-sm-layout="rd-navbar-fixed" data-md-layout="rd-navbar-fixed" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-xl-layout="rd-navbar-static" data-xl-device-layout="rd-navbar-static" data-xxl-layout="rd-navbar-static" data-xxl-device-layout="rd-navbar-static" data-lg-stick-up-offset="46px" data-xl-stick-up-offset="46px" data-xxl-stick-up-offset="46px" data-lg-stick-up="true" data-xl-stick-up="true" data-xxl-stick-up="true">
-                <div class="rd-navbar-main-outer">
-                    <div class="rd-navbar-main">
-                        <!-- RD Navbar Panel-->
-                        <div class="rd-navbar-panel">
-                            <!-- RD Navbar Toggle-->
-                            <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-nav-wrap"><span></span></button>
-                            <!-- RD Navbar Brand-->
-                            <div class="rd-navbar-brand"><a th:href="@{/home}"><img class="brand-logo-light" th:src="@{/images/logo.png}" alt="" width="207" height="51"/></a></div>
-                        </div>
-                        <div class="rd-navbar-main-element">
-                            <div class="rd-navbar-nav-wrap">
-                                <!-- RD Navbar Nav-->
-                                <ul class="rd-navbar-nav">
-                                    <li class="rd-nav-item active"><a class="rd-nav-link" style="color: white;" th:href="@{/home}">Home</a>
-                                    </li>
-                                    <li class="rd-nav-item"><a class="rd-nav-link" th:href="@{/students}">Student List</a>
-                                    </li>
-                                    <li class="rd-nav-item"><a class="rd-nav-link" th:href="@{contacts.html}">Tests</a>
-                                    </li>
-                                </ul><a class="button button-primary button-sm" th:href="@{/students}">Return to student list</a>
-                            </div>
-                        </div><a class="button button-primary button-sm" th:href="@{/students}">Return to student list</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
-    <!-- Swiper-->
-    <section class="section section-lg bg-gray-1">
-        <div class="container">
-    <div class="Wrapper">
-        <div class="form-container">
-
-            <div th:if="${error}" class="error-message" style="color: red; margin-bottom: 15px;">
-                <p th:text="${error}"></p>
-            </div>
-
-            <form th:action="@{/students/create}" th:object="${student}" method="post" enctype="multipart/form-data">
-                <div class="input">
-                    <input type="text" th:field="*{name}" placeholder="Name*" required>
-                </div>
-                <div class="input">
-                    <input type="file" name="profilePicture" accept="image/*" required>
-                </div>
-                <div class="input">
-                    <select th:field="*{powerType}" class="form-select" required>
-                        <option value="">Power Type*</option>
-                        <option value="mage">Mage</option>
-                        <option value="guard">Guard</option>
-                        <option value="healer">Healer</option>
-                    </select>
-                </div>
-                <button type="submit">Save</button>
-            </form>
+<!-- Navigation Header -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">Vocab Learning Platform</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
         </div>
     </div>
-        </div>
-    </section>
-    <!-- Page Footer-->
-    <footer class="section footer-minimal context-dark">
-        <div class="container wow-outer">
-            <div class="wow fadeIn">
-                <div class="row row-50 row-lg-60">
-                    <div class="col-12"><a th:href="@{/home}"><img th:src="@{/images/logo.png}" alt="" width="207" height="51"/></a></div>
-                    <div class="col-12">
-                        <ul class="footer-minimal-nav">
-                            <li><a href="#">Causes</a></li>
-                            <li><a href="#">Gallery</a></li>
-                            <li><a href="#">Team</a></li>
-                            <li><a href="contacts.html">Contacts</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-12">
-                        <ul class="social-list">
-                            <li><a class="icon icon-sm icon-circle icon-circle-md icon-bg-white fa-facebook" href="#"></a></li>
-                            <li><a class="icon icon-sm icon-circle icon-circle-md icon-bg-white fa-instagram" href="#"></a></li>
-                            <li><a class="icon icon-sm icon-circle icon-circle-md icon-bg-white fa-twitter" href="#"></a></li>
-                            <li><a class="icon icon-sm icon-circle icon-circle-md icon-bg-white fa-youtube-play" href="#"></a></li>
-                            <li><a class="icon icon-sm icon-circle icon-circle-md icon-bg-white fa-pinterest-p" href="#"></a></li>
-                        </ul>
-                    </div>
-                </div>
-                <p class="rights"><span>&copy;&nbsp;</span><span class="copyright-year"></span><span>&nbsp;</span><span>Helper</span><span>.&nbsp;</span><span>All Rights Reserved.</span><span>&nbsp;</span>Design&nbsp;by&nbsp;<a href="https://www.templatemonster.com/">Templatemonster</a></p>
-            </div>
-        </div>
-    </footer>
-</div>
+</nav>
 
-<div class="snackbars" id="form-output-global"></div>
-<script th:src="@{/js/core.min.js}"></script>
-<script th:src="@{/js/script.js}"></script>
-<!-- coded by ragnar-->
+<!-- Create Student Form Section -->
+<section class="form-section">
+    <h2>Create New Student</h2>
+    <form th:action="@{/students/create}" method="post" enctype="multipart/form-data">
+        <!-- Error Message Display -->
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- Name Input -->
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" class="form-control" th:value="${student.name}" required />
+        </div>
+
+        <!-- Power Type Input -->
+        <div class="form-group">
+            <label for="powerType">Power Type</label>
+            <input type="text" id="powerType" name="powerType" class="form-control" th:value="${student.powerType}" required />
+        </div>
+
+        <!-- Photo Upload Input -->
+        <div class="form-group">
+            <label for="photo">Upload Photo</label>
+            <input type="file" id="photo" name="photo" class="form-control" accept="image/*" />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">Create Student</button>
+    </form>
+</section>
+
 </body>
 </html>

@@ -9,7 +9,10 @@ public class Student {
     private Long id;
     private String name;
     private String powerType;
-    private String profilePictureName;
+
+    @Column(columnDefinition = "LONGBLOB")
+    @Basic(fetch = FetchType.EAGER)
+    private byte[] photo = new byte[0];
     private String symbol;
     @Column(nullable = false)
     private int level = 1;
@@ -44,14 +47,6 @@ public class Student {
 
     public void setPowerType(String powerType) {
         this.powerType = powerType;
-    }
-
-    public String getProfilePictureName() {
-        return profilePictureName;
-    }
-
-    public void setProfilePictureName(String profilePictureName) {
-        this.profilePictureName = profilePictureName;
     }
 
     public double getHeart() {
@@ -92,5 +87,13 @@ public class Student {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 }

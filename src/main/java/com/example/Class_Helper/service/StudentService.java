@@ -57,8 +57,20 @@ public class StudentService {
         Student student = getStudentById(id);
         if (student != null) {
             int totalPoint = student.getPoint() + pointToAdd;
-            int newLevel = student.getLevel() + (totalPoint / 2000);
+            int levelChange = totalPoint / 2000;
             int remainingPoint = totalPoint % 2000;
+
+            if (totalPoint < 0) {
+                remainingPoint = 2000 + (totalPoint % 2000);
+                levelChange -= 1;
+            }
+
+            int newLevel = student.getLevel() + levelChange;
+            if (newLevel < 0) {
+                newLevel = 0;
+                remainingPoint = 0;
+            }
+
             student.setLevel(newLevel);
             student.setPoint(remainingPoint);
             return updateStudent(student);
